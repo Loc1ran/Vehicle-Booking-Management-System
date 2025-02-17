@@ -13,9 +13,10 @@ public class UserFileDataAccess implements UserDAO {
         File file = new File("src.com.local/users.csv");
 
         User[] users = new User[4];
-        int i = 0;
+        
 
         try{
+            int i = 0;
             Scanner scanner = new Scanner(file);
             while (scanner.hasNext()) {
                 String[] split = scanner.nextLine().split(",");
