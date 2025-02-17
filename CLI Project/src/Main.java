@@ -16,11 +16,14 @@ import java.util.UUID;
 public class Main {
     public static void main(String[] args) {
 
-        BookingDAO bookingDAO = new BookingDAO();
-        CarServices carServices = new CarServices();
+        UserDAO userDao = new UserFileDataAccess();
+        UserService userService = new UserService(userDao);
 
-        BookingServices bookingServices = new BookingServices(bookingDAO, carServices);
-        UserService userService = new UserService();
+        BookingDAO carBookingDao = new BookingDAO();
+        CarDAO carDAO = new CarDAO();
+
+        CarServices carService = new CarServices(carDAO);
+        BookingServices bookingServices = new BookingServices(carBookingDao, carService);
 
         Option();
         Scanner scanner = new Scanner(System.in);
