@@ -31,7 +31,7 @@ public class BookingDAO {
             biggerCarBookings[i] = bookings[i];
         }
 
-        biggerCarBookings[bookings.length] = bookings;
+        biggerCarBookings[bookings.length] = carBooking;
 
     }
 
