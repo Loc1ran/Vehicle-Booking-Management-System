@@ -18,6 +18,10 @@ public class BookingServices {
     public UUID Book(User user, String regNumber){
         Car[] cars = getAvailableCars();
 
+        if ( cars.length == 0 ){
+            throw new IllegalStateException("No car available for renting");
+        }
+
         for ( Car c : cars ){
             if ( c.getRegNumber().equals(regNumber)){
                 Car car = carServices.getCar(regNumber);
@@ -47,7 +51,7 @@ public class BookingServices {
 
         for ( Booking b : carBooking ){
             if (b != null && b.getUsers().getId().equals(id)){
-                UserBookedCar[index++] = b;
+                UserBookedCar[index++] = b.getCar();
             }
         }
         return UserBookedCar;
@@ -84,9 +88,13 @@ public class BookingServices {
     }
 
     private Car[] getCars(Car[] cars){
-        Booking[] carBooking = bookingDAO.ViewBooking();
 
         if(carBooking.length == 0)
+            return new Car[0];
+
+        Booking[] carBooking = bookingDAO.ViewBooking();
+
+        if ( carBooking.length == 0 )
             return cars;
 
         int availableSlot = 0;
@@ -107,6 +115,7 @@ public class BookingServices {
 
         Car[] availableCar = new Car[availableSlot];
         int index = 0;
+        
         for (Car c : cars) {
             boolean booked = false;
 
