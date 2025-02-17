@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class CarServices {
-    private CarDAO carDAO;
+    private final CarDAO carDAO;
 
     public CarServices() {
         carDAO = new CarDAO();
