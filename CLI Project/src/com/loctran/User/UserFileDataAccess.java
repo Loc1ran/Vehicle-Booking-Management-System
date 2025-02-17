@@ -11,7 +11,7 @@ public class UserFileDataAccess implements UserDAO {
 
     @Override
     public List<User> getUsers(){
-        File file = new File("users.csv");
+        File file = new File("src/com/loctran/users.csv");
 
         List<User> users = new ArrayList<>();
 
