@@ -16,12 +16,15 @@ import java.util.UUID;
 public class Main {
     public static void main(String[] args) {
 
-        BookingDAO bookingDAO = new BookingDAO();
-        CarServices carServices = new CarServices();
+        UserDAO userDao = new UserFileDataAccess();
+        UserService userService = new UserService(userDao);
 
-        BookingServices bookingServices = new BookingServices(bookingDAO, carServices);
-        UserService userService = new UserService();
+        BookingDAO carBookingDao = new BookingDAO();
+        CarDAO carDAO = new CarDAO();
 
+        CarServices carService = new CarServices(carDAO);
+        BookingServices bookingServices = new BookingServices(carBookingDao, carService);
+        
         Option();
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
@@ -102,8 +105,10 @@ public class Main {
         if ( bookings.length == 0){
             System.out.println("No Booked Cars");
         }
-        for ( Booking b : bookings) {
-            System.out.println(b);
+        else{
+            for ( Booking b : bookings) {
+                System.out.println(b);
+            }
         }
     }
 
@@ -121,7 +126,7 @@ public class Main {
         }
     }
 
-    public static void Booking(UserService userService, BookingServices bookingService, Scanner scanner){
+    private static void Booking(UserService userService, BookingServices bookingService, Scanner scanner){
         GetAvailableCars(bookingService);
 
         System.out.println("➡️ select car reg number");
