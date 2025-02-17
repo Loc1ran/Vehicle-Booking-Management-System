@@ -3,10 +3,10 @@ package com.loctran.User;
 import java.util.UUID;
 
 public class UserService {
-    private UserArrayDataAccessService userDAO;
+    private final UserDAO userDAO;
 
-    public UserService() {
-        this.userDAO = new UserArrayDataAccessService();
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     public User[] getUsers() {
