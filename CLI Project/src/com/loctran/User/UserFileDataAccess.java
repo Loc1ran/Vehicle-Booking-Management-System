@@ -10,7 +10,7 @@ public class UserFileDataAccess implements UserDAO {
 
     @Override
     public User[] getUsers(){
-        File file = new File("users.csv");
+        File file = new File("src.com.local/users.csv");
 
         User[] users = new User[4];
         int i = 0;
