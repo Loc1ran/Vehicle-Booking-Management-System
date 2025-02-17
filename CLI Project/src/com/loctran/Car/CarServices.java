@@ -3,10 +3,10 @@ package com.loctran.Car;
 import java.util.UUID;
 
 public class CarServices {
-    private CarDAO carDAO;
+    private final CarDAO carDAO;
 
-    public CarServices() {
-        carDAO = new CarDAO();
+    public CarServices(CarDAO carDAO) {
+        this.carDAO = carDAO;
     }
 
     public Car[] getAllCars() {
