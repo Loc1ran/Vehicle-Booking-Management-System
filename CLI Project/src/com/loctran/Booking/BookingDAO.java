@@ -7,18 +7,32 @@ import java.util.UUID;
 
 public class BookingDAO {
     private static final Booking[] bookings;
-    private static int nextAvailableSpace;
-    private static final int capacity = 10;
 
     static{
-        bookings = new Booking[capacity];
+        bookings = new Booking[10];
     }
 
     public void Booking(Booking carBooking){
-        if ( nextAvailableSpace+1 >= capacity ){
-            System.out.println("The Booking is Full");
+        int availableSpace = -1;
+        for ( int i = 0; i < bookings.length; i++){
+            if ( bookings[i] == null){
+                availableSpace = i;
+            }
         }
-        bookings[nextAvailableSpace++] = carBooking;
+
+        if ( availableSpace > -1 ) {
+            bookings[availableSpace] = carBooking;
+            return;
+        }
+
+        Booking[] biggerCarBookings = new Booking[bookings.length + 10];
+
+        for ( int i = 0; i < bookings.length; i++){
+            biggerCarBookings[i] = bookings[i];
+        }
+
+        biggerCarBookings[bookings.length] = carBooking;
+
     }
 
     public Booking[] ViewBooking(){
