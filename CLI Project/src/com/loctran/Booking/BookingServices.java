@@ -71,30 +71,33 @@ public class BookingServices {
 
     private List<Car> getCars(List<Car> cars){
 
-        if(cars.isEmpty()){
+        if (cars.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Booking> carBooking = bookingDAO.ViewBooking();
 
-        if(carBooking.isEmpty())
-            return Collections.emptyList();
+        List<Booking> carBookings = bookingDAO.ViewBooking();
+        
+        if (carBookings.isEmpty()) {
+            return cars;
+        }
 
-        List<Car> availableCar = new ArrayList();
 
-        for (Car c : cars) {
+        List<Car> availableCars = new ArrayList<>();
+        
+        for (Car car : cars) {
             boolean booked = false;
-
-            for (Booking b : carBooking) {
-                if (b == null || !b.getCars().equals(c)) {
+            for (Booking carBooking : carBookings) {
+                if (carBooking == null || !carBooking.getCars().equals(car)) {
                     continue;
                 }
                 booked = true;
             }
             if (!booked) {
-                cars.add(c);
+                availableCars.add(car);
             }
         }
-        return availableCar;
+
+        return availableCars;
     }
 
 }
