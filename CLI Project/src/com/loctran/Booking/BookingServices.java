@@ -70,16 +70,16 @@ public class BookingServices {
     }
 
     private List<Car> getCars(List<Car> cars){
+
+        if(cars.isEmpty()){
+            return Collections.emptyList();
+        }
         List<Booking> carBooking = bookingDAO.ViewBooking();
 
         if(carBooking.isEmpty())
             return Collections.emptyList();
 
-        List<Car> availableCar = carServices.getAllCars();
-
-        if(availableCar.isEmpty()){
-            return Collections.emptyList();
-        }
+        List<Car> availableCar = new ArrayList();
 
         for (Car c : cars) {
             boolean booked = false;
