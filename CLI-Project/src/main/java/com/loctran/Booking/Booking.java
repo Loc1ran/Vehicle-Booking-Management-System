@@ -9,6 +9,24 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Table(
+        name = "booking",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "booking_id_unique",
+                        columnNames = "id"
+                ),
+                @UniqueConstraint(
+                        name = "car_id_unique",
+                        columnNames = "car_id"
+                ),
+                @UniqueConstraint(
+                        name = "user_id_unique",
+                        columnNames = "user_id"
+                )
+
+        }
+)
 public class Booking {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO)
