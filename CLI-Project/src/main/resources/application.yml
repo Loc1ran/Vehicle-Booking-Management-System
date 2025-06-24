@@ -17,7 +17,7 @@ spring:
     password: password
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
