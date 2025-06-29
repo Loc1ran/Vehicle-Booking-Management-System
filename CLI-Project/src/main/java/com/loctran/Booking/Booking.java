@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+// we need this because we learned both jdbc and jpa
 @Table(
         name = "booking",
         uniqueConstraints = {

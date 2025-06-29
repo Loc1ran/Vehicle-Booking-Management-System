@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,7 +24,7 @@ public class BookingServices {
     private final UserService userService;
 
 
-    public BookingServices(@Qualifier("bookingJPA") BookingDAO bookingDAO, CarServices carServices, UserService userService) {
+    public BookingServices(@Qualifier("bookingJDBC") BookingDAO bookingDAO, CarServices carServices, UserService userService) {
         this.bookingDAO = bookingDAO;
         this.carServices = carServices;
         this.userService = userService;

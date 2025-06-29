@@ -1,5 +1,6 @@
 package com.loctran.Booking;
 import com.loctran.Car.Car;
+import com.loctran.Exception.RequestValidationException;
 import com.loctran.Exception.ResourceNotFound;
 import org.springframework.stereotype.Repository;
 
@@ -44,12 +45,12 @@ public class BookingListDataAccessServices implements BookingDAO {
     @Override
     public List<Booking> ViewAllUserBooking(UUID id) {
         List<Booking> bookingList = ViewBooking();
-        if(bookingList.isEmpty()){
-            throw new ResourceNotFound("No booking with userId " + id);
+        if ( bookingList.isEmpty()){
+            throw new ResourceNotFound("no booking available");
         }
+
         return bookingList.stream().filter(booking -> booking != null && booking.getUsers().
-                getId().equals(id)).collect(Collectors.toList());
-    }
+                getId().equals(id)).collect(Collectors.toList()); }
 
     @Override
     public void updateBooking(Booking booking) {
