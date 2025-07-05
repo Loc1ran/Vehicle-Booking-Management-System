@@ -65,7 +65,7 @@ public class Car {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Car car = (Car) o;
-        return regNumber == car.regNumber && isElectric == car.isElectric && Objects.equals(rentalPricePerDay, car.rentalPricePerDay) && Objects.equals(brand, car.brand);
+        return Objects.equals(regNumber, car.regNumber) && isElectric == car.isElectric && Objects.equals(rentalPricePerDay, car.rentalPricePerDay) && Objects.equals(brand, car.brand);
     }
 
     @Override

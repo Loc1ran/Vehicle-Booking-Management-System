@@ -1,25 +1,30 @@
 package com.loctran.Booking;
 
 import com.loctran.Car.Car;
+import com.loctran.Car.CarRowMapper;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository("bookingJDBC")
 public class BookingJDBCDataAccessService implements BookingDAO{
 
     private final JdbcTemplate jdbcTemplate;
     private final BookingRowMapper bookingRowMapper;
+    private final CarRowMapper carRowMapper;
 
-    public BookingJDBCDataAccessService(JdbcTemplate jdbcTemplate, BookingRowMapper bookingRowMapper) {
+    public BookingJDBCDataAccessService(JdbcTemplate jdbcTemplate, BookingRowMapper bookingRowMapper, CarRowMapper carRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.bookingRowMapper = bookingRowMapper;
+        this.carRowMapper = carRowMapper;
     }
 
     @Override
@@ -50,25 +55,32 @@ public class BookingJDBCDataAccessService implements BookingDAO{
                 INSERT INTO Booking (id, car_id, user_id)
                 VALUES (?, ?, ?)
                 """;
-        int result = jdbcTemplate.update(sql, booking.getId(), booking.getCars(), booking.getUsers());
+        int result = jdbcTemplate.update(sql, booking.getId(), booking.getCars().getRegNumber(), booking.getUsers().getId());
         System.out.println("jdbcTemplate update result :" + result);
 
     }
 
     @Override
     public List<Car> AvailableCars(List<Car> cars) {
-//        var sql = """
-//                SELECT *
-//                FROM car c
-//                WHERE c.reg_number IN (:cars)
-//                AND NOT EXISTS(
-//                SELECT 1 FROM booking b
-//                WHERE b.car_id = c.reg_number
-//                )
-//                """;
-//
-//        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Car.class));
-        return List.of();
+        List<String> regNumbers = cars.stream()
+                .map(Car::getRegNumber)
+                .toList();
+
+        NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+        String sql = """
+                    SELECT reg_number, rental_price_per_day, brand, is_electric
+                    FROM car c
+                    WHERE c.reg_number IN (:cars)
+                    AND NOT EXISTS (
+                    SELECT 1 FROM booking b
+                    WHERE b.car_id = c.reg_number
+                )
+                """;
+
+        Map<String, Object> params = Map.of("cars", regNumbers);
+        return namedJdbcTemplate.query(sql, params, carRowMapper);
+
     }
 
     @Override
@@ -113,7 +125,7 @@ public class BookingJDBCDataAccessService implements BookingDAO{
                    UPDATE car SET rental_price_per_day = ?, brand = ?, is_electric = ?
                    WHERE reg_number = ?
                    """;
-            jdbcTemplate.update(sql, booking.getCars(), booking.getCars().getRegNumber());
+            jdbcTemplate.update(sql, booking.getCars().getRentalPricePerDay(), booking.getCars().getBrand().name(), booking.getCars().isElectric(), booking.getCars().getRegNumber());
         }
 
         if (booking.getUsers() != null){
@@ -121,7 +133,7 @@ public class BookingJDBCDataAccessService implements BookingDAO{
                     UPDATE user_info SET name = ?
                     WHERE id = ?
                     """;
-            jdbcTemplate.update(sql, booking.getUsers(), booking.getUsers().getId());
+            jdbcTemplate.update(sql, booking.getUsers().getName(), booking.getUsers().getId());
         }
     }
 
