@@ -37,13 +37,7 @@ public class BookingJPADataAccessServices implements BookingDAO{
 
     @Override
     public List<Booking> ViewAllUserBooking(UUID id) {
-        List<Booking> bookings = bookingRepository.findBookingsByUserId(id);
-
-        if (bookings.isEmpty()) {
-            throw new ResourceNotFound("No booking with userId " + id);
-        }
-
-        return bookings;
+       return bookingRepository.findBookingsByUserId(id);
     }
 
     @Override
