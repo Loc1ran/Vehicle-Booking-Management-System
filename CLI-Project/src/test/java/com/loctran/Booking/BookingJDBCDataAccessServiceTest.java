@@ -201,7 +201,6 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         User userUpdate = new User();
         userUpdate.setId(userID);
         userUpdate.setName("Loc");
-        List<Booking> old = underTest.ViewBooking();
 
         Booking bookingUpdate = new Booking();
         bookingUpdate.setId(bookingId);
@@ -210,6 +209,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
         underTest.updateBooking(bookingUpdate);
         Optional<Booking> actual = underTest.findBookingById(bookingId);
+
         assertThat(actual).isPresent().hasValueSatisfying(b -> {
             assertThat(b.getCars()).isEqualTo(carUpdate);
             assertThat(b.getUsers()).isEqualTo(userUpdate);
