@@ -13,6 +13,7 @@ import com.loctran.User.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.View;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class BookingServices {
             UUID id = UUID.randomUUID();
             bookingDAO.Booking(new Booking(getcar, user));
             return id;
-        }).orElseThrow(() -> new IllegalStateException("Cars not found or have been registered  " + regNumber));
+        }).orElseThrow(() -> new IllegalStateException("Invalid regNumber : " + regNumber));
     }
 
     public List<Booking> ViewAllUserBooking(UUID id){
@@ -54,10 +55,12 @@ public class BookingServices {
     }
 
     private List<Car> getCars(List<Car> cars) {
-        if(bookingDAO.AvailableCars(cars).isEmpty()){
-            throw new DuplicateResourceException("No cars available");
+        List<Car> available = bookingDAO.AvailableCars(cars);
+        if (available.isEmpty()) {
+            throw new ResourceNotFound("No cars available");
         }
-        return bookingDAO.AvailableCars(cars);
+        return available;
+
     }
 
     public List<Booking> viewAllBooking(){
@@ -65,11 +68,19 @@ public class BookingServices {
     }
 
     public void deleteBooking(UUID id){
+        if ( ViewAllUserBooking(id).isEmpty() ){
+            throw new ResourceNotFound("No booking found");
+        }
         bookingDAO.deleteBooking(id);
     }
 
+    public Booking findBookingById(UUID bookingId){
+        return bookingDAO.findBookingById(bookingId)
+                .orElseThrow(() -> new ResourceNotFound("No Booking with id: " + bookingId));
+    }
+
     public void updateBooking(UUID uuid, UpdateBookingRequest bookingRequest, UpdateCarRequest updateCarRequest, UpdateUserRequest updateUserRequest){
-        Booking booking = bookingDAO.findBookingById(uuid).orElseThrow(() -> new ResourceNotFound("Booking not found"));
+        Booking booking = findBookingById(uuid);
         boolean changes = false;
 
         if( bookingRequest.id() != null && !bookingRequest.id().equals(booking.getId()) ){
