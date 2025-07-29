@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class CarServices {
     private final CarDAO carDAO;
 
-    public CarServices(@Qualifier("carJPA") CarDAO carDAO) {
+    public CarServices(@Qualifier("carJDBC") CarDAO carDAO) {
         this.carDAO = carDAO;
     }
 
@@ -35,11 +35,14 @@ public class CarServices {
     }
 
     public void deleteCar(String regNumber){
+        if(carDAO.getCarById(regNumber).isEmpty()){
+            throw new ResourceNotFound(String.format("car with regNumber %s not found", regNumber));
+        }
         carDAO.deleteCar(regNumber);
     }
 
     public void updateCar(String regNumber, UpdateCarRequest updateRequest){
-        Car car = carDAO.getCarById(regNumber).orElseThrow(() -> new ResourceNotFound("user not found"));
+        Car car = carDAO.getCarById(regNumber).orElseThrow(() -> new ResourceNotFound("car not found"));
         boolean changes = false;
 
         if( updateRequest.regNumber() != null && !updateRequest.regNumber().equals(car.getRegNumber())){

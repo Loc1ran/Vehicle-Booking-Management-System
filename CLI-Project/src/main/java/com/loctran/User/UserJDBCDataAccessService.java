@@ -2,11 +2,13 @@ package com.loctran.User;
 
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository("userJDBC")
 public class UserJDBCDataAccessService implements UserDAO {
     private final JdbcTemplate jdbcTemplate;
     private final UserRowMapper userRowMapper;

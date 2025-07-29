@@ -14,7 +14,7 @@ import java.util.UUID;
 public class UserService {
     private final UserDAO userDAO;
 
-    public UserService(@Qualifier("userJPA") UserDAO userDAO) {
+    public UserService(@Qualifier("userJDBC") UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
@@ -28,6 +28,9 @@ public class UserService {
     }
 
     public void deleteUser(UUID id) {
+        if ( userDAO.getUserById(id).isEmpty() ) {
+            throw new ResourceNotFound("user not found");
+        }
         userDAO.deleteUser(id);
     }
 

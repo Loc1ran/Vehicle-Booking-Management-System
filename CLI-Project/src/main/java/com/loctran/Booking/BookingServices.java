@@ -37,7 +37,7 @@ public class BookingServices {
             Car getcar = carServices.getCar(regNumber);
             // void for JPA because I have auto generated UUID
             UUID id = UUID.randomUUID();
-            bookingDAO.Booking(new Booking(getcar, user));
+            bookingDAO.Booking(new Booking(id, getcar, user));
             return id;
         }).orElseThrow(() -> new IllegalStateException("Invalid regNumber : " + regNumber));
     }
@@ -68,7 +68,7 @@ public class BookingServices {
     }
 
     public void deleteBooking(UUID id){
-        if ( ViewAllUserBooking(id).isEmpty() ){
+        if ( findBookingById(id) == null) {
             throw new ResourceNotFound("No booking found");
         }
         bookingDAO.deleteBooking(id);
@@ -83,7 +83,7 @@ public class BookingServices {
         Booking booking = findBookingById(uuid);
         boolean changes = false;
 
-        if( bookingRequest.id() != null && !bookingRequest.id().equals(booking.getId()) ){
+        if( bookingRequest != null && bookingRequest.id() != null && !bookingRequest.id().equals(booking.getId()) ){
             throw new RequestValidationException("Id can't be changed");
         }
 

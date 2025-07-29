@@ -1,10 +1,12 @@
 package com.loctran.Car;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository("carJDBC")
 public class CarJDBCDataAccessService implements CarDAO{
 
     private final JdbcTemplate jdbcTemplate;
@@ -69,10 +71,14 @@ public class CarJDBCDataAccessService implements CarDAO{
                     UPDATE car SET brand = ?
                     WHERE reg_number = ?;
                     """;
-            jdbcTemplate.update(sql, car.getBrand(), car.getRegNumber());
+            jdbcTemplate.update(sql, car.getBrand().name(), car.getRegNumber());
         }
 
-//        if ( car.isElectric() )
+            var sql = """
+                    UPDATE car SET is_electric = ?
+                    WHERE reg_number = ?;
+                    """;
+            jdbcTemplate.update(sql, car.isElectric(), car.getRegNumber());
 
     }
 }

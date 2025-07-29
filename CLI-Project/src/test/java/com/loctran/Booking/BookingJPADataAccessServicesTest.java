@@ -23,8 +23,6 @@ import static org.mockito.Mockito.when;
 
 class BookingJPADataAccessServicesTest {
     private BookingJPADataAccessServices underTest;
-    private CarJDBCDataAccessService carJDBCDataAccessService;
-    private UserJDBCDataAccessService userJDBCDataAccessService;
     private AutoCloseable autoCloseable;
 
 

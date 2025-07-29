@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-    @RequestMapping("api/v1/booking")
+@RequestMapping("api/v1/booking")
 public class BookingController {
     private final BookingServices bookingServices;
 
@@ -20,6 +20,11 @@ public class BookingController {
     @GetMapping
     public List<Booking> getAllBookings() {
         return bookingServices.viewAllBooking();
+    }
+
+    @GetMapping("{uuid}")
+    public Booking getBookingById(@PathVariable("uuid") UUID id) {
+        return bookingServices.findBookingById(id);
     }
 
     @GetMapping("viewUserBookedCars/{uuid}")

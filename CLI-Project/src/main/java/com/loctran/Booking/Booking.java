@@ -20,12 +20,7 @@ import java.util.UUID;
                 @UniqueConstraint(
                         name = "car_id_unique",
                         columnNames = "car_id"
-                ),
-                @UniqueConstraint(
-                        name = "user_id_unique",
-                        columnNames = "user_id"
                 )
-
         }
 )
 public class Booking {
