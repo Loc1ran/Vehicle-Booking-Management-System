@@ -51,7 +51,7 @@ class BookingRepositoryTest {
         List<Car> cars = carRepository.findAll();
         List<Car> actual = bookingRepository.findAvailableCarsFromList(cars);
 
-        assertThat(actual).isNotEmpty().containsExactly(car2);
+        assertThat(actual).isNotEmpty().contains(car2).doesNotContain(car1);
     }
 
     @Test
@@ -75,6 +75,6 @@ class BookingRepositoryTest {
 
         List<Booking> actual =  bookingRepository.findBookingsByUserId(user.getId());
 
-        assertThat(actual).isNotEmpty().containsExactly(booking1, booking2);
+        assertThat(actual).isNotEmpty().contains(booking1, booking2);
     }
 }

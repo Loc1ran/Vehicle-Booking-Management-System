@@ -68,8 +68,8 @@ public class BookingServices {
     }
 
     public void deleteBooking(UUID id){
-        if ( findBookingById(id) == null) {
-            throw new ResourceNotFound("No booking found");
+        if (bookingDAO.findBookingById(id).isEmpty()) {
+            throw new ResourceNotFound("No Booking with id: " + id);
         }
         bookingDAO.deleteBooking(id);
     }

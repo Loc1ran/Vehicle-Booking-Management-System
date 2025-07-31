@@ -151,31 +151,30 @@ class BookingServicesTest {
 
     @Test
     void deleteBooking() {
-        UUID userId = UUID.randomUUID();
+        UUID bookingId = UUID.randomUUID();
 
         Car car = new Car("1111", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(userId, "Loc");
+        User user = new User(UUID.randomUUID(), "Loc");
 
-        Booking booking = new Booking(UUID.randomUUID(), car, user);
-        List<Booking> userBooking = List.of(booking);
+        Booking booking = new Booking(bookingId, car, user);
 
-        when(bookingDAO.ViewAllUserBooking(userId)).thenReturn(userBooking);
+        when(bookingDAO.findBookingById(bookingId)).thenReturn(Optional.of(booking));
 
-        underTest.deleteBooking(userId);
+        underTest.deleteBooking(bookingId);
 
-        verify(bookingDAO).ViewAllUserBooking(userId);
-        verify(bookingDAO).deleteBooking(userId);
+        verify(bookingDAO).findBookingById(bookingId);
+        verify(bookingDAO).deleteBooking(bookingId);
     }
 
     @Test
     void willThrowAnExceptionWhenNoUserBookingBeforeDeleteBooking() {
-        UUID userId = UUID.randomUUID();
+        UUID bookingId = UUID.randomUUID();
 
-        when(bookingDAO.ViewAllUserBooking(userId)).thenReturn(List.of());
+        when(bookingDAO.findBookingById(bookingId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> underTest.deleteBooking(userId))
+        assertThatThrownBy(() -> underTest.deleteBooking(bookingId))
                 .isInstanceOf(ResourceNotFound.class)
-                .hasMessage("No booking found");
+                .hasMessage("No Booking with id: " + bookingId);
 
     }
 
