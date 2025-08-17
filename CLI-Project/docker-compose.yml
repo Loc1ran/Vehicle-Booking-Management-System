@@ -13,6 +13,18 @@ services:
     networks:
       - db
     restart: unless-stopped
+  loctran1213:
+    container_name: loctran1213
+    image: loctran1213/cli-project
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/booking
+    ports:
+      - "8080:8080"
+    networks:
+      - db
+    depends_on:
+      - db
+    restart: unless-stopped
 networks:
   db:
     driver: bridge
