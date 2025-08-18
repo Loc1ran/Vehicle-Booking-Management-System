@@ -1,11 +1,8 @@
 package com.loctran.Booking;
 
 import com.loctran.Car.Car;
-import com.loctran.Car.UpdateCarRequest;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
