@@ -74,7 +74,7 @@ public class BookingJDBCDataAccessService implements BookingDAO{
                     WHERE c.reg_number IN (:cars)
                     AND NOT EXISTS (
                     SELECT 1 FROM booking b
-                    WHERE b.car_id = c.reg_number
+                    WHERE b.car_id = c.rental_price_per_day
                 )
                 """;
 
