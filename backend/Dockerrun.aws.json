@@ -3,7 +3,7 @@
   "containerDefinitions": [
     {
       "name": "loctran-api",
-      "image": "loctran1213/cli-project:latest",
+      "image": "loctran1213/loctran-api:latest",
       "essential": true,
       "memory": 512,
       "portMappings": [
