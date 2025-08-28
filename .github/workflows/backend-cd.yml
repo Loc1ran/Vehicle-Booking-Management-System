@@ -37,7 +37,7 @@ jobs:
       - name: Slack commit message and sha
         run: >
           curl -X POST -H 'Content-type: application/json'
-          --data '{"text":":github: https://github.com/Loc1ran/CLI-Project/commit/${{ git.sha }} - ${{ github.event.head_commit.message }}"}'
+          --data '{"text":":github: https://github.com/Loc1ran/CLI-Project/commit/${{ github.sha }} - ${{ github.event.head_commit.message }}"}'
           ${{ secrets.SLACK_WEBHOOK_URL }}
       - name: Deployment Started
         run: >
