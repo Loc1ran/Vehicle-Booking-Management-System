@@ -1,6 +1,5 @@
 package com.loctran.Car;
 
-import com.loctran.Exception.DuplicateResourceException;
 import com.loctran.Exception.RequestValidationException;
 import com.loctran.Exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -62,7 +61,7 @@ public class CarServices {
         }
 
         if( updateRequest.isElectric() != car.isElectric() ){
-            car.setElectric(updateRequest.isElectric());
+            car.setIsElectric(updateRequest.isElectric());
             changes = true;
         }
 

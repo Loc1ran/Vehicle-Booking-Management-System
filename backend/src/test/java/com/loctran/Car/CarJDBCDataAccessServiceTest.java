@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CarJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     private CarJDBCDataAccessService underTest;
@@ -97,7 +96,7 @@ class CarJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         carUpdate.setRegNumber("4444");
         carUpdate.setBrand(newBrand);
         carUpdate.setRentalPricePerDay(newRentalPrice);
-        carUpdate.setElectric(false);
+        carUpdate.setIsElectric(false);
 
         underTest.updateCar(carUpdate);
 

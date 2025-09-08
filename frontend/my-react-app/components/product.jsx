@@ -10,9 +10,27 @@ import {
     Icon,
     chakra,
     Tooltip,
+    Stack,
+    useDisclosure,
+    Button,
+    AlertDialog,
+    AlertDialogOverlay,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogBody,
+    AlertDialogFooter,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton,
+    DrawerHeader,
+    DrawerBody,
+    DrawerFooter, Drawer,
 } from '@chakra-ui/react'
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs'
 import { FiShoppingCart } from 'react-icons/fi'
+import React from "react";
+import DeleteCarButton from "./DeleteCarButton.jsx";
+import UpdateCarDrawerForm from "./UpdateCarDrawerForm.jsx";
 
 const data = {
     isNew: true,
@@ -23,6 +41,9 @@ const data = {
     rating: 4.2,
     numReviews: 34,
 }
+
+const AddIcon = () => "+"
+const CloseIcon = () => "X"
 
 
 function Rating({ rating, numReviews }) {
@@ -53,7 +74,9 @@ function Rating({ rating, numReviews }) {
     )
 }
 
-function ProductAddToCart({id, cars, users,}) {
+function ProductAddToCart({regNumber, rentalPricePerDay, brand, electric, fetchCars}) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = React.useRef()
     return (
         <Flex p={50} w="full" alignItems="center" justifyContent="center">
             <Box
@@ -64,18 +87,25 @@ function ProductAddToCart({id, cars, users,}) {
                 shadow="lg"
                 position="relative">
                 {data.isNew && (
-                    <Circle size="10px" position="absolute" top={2} right={2} bg="red.200" />
+                    <Circle size="10px" position="absolute" top={2} right={2} bg="green.200" />
                 )}
 
-                <Image src={data.imageURL} alt={`Picture of ${cars.brand}`} roundedTop="lg" />
+                <Image src={data.imageURL} alt={`Picture of ${brand}`} roundedTop="lg" />
 
-                <Box p="6">
+                <UpdateCarDrawerForm regNumber={regNumber}
+                               rentalPricePerDay={rentalPricePerDay}
+                               brand={brand}
+                               electric={electric}
+                               fetchCars={fetchCars}/>
+
+                <Box p="6" mt={-5}>
                     <Box display="flex" alignItems="baseline">
                         {data.isNew && (
-                            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
+                            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
                                 Available
                             </Badge>
                         )}
+                        <DeleteCarButton regNumber={regNumber} fetchCars={fetchCars}/>
                     </Box>
                     <Flex mt="1" justifyContent="space-between" alignContent="center">
                         <Box
@@ -84,7 +114,7 @@ function ProductAddToCart({id, cars, users,}) {
                             as="h4"
                             lineHeight="tight"
                             isTruncated>
-                            {cars.brand}
+                            {brand}
                         </Box>
                         <Tooltip
                             label="Add to cart"
@@ -93,7 +123,7 @@ function ProductAddToCart({id, cars, users,}) {
                             color={'gray.800'}
                             fontSize={'1.2em'}>
                             <chakra.a href={'#'} display={'flex'}>
-                                <Icon as={FiShoppingCart} h={7} w={7} alignSelf={'center'} />
+                                <Icon as={FiShoppingCart} h={7} w={7} alignSelf={'center'}  />
                             </chakra.a>
                         </Tooltip>
                     </Flex>
@@ -104,7 +134,7 @@ function ProductAddToCart({id, cars, users,}) {
                             <Box as="span" color={'gray.600'} fontSize="lg">
                                 $
                             </Box>
-                            {cars.rentalPricePerDay.toFixed(2)}
+                            {rentalPricePerDay.toFixed(2)}
                         </Box>
                     </Flex>
                 </Box>

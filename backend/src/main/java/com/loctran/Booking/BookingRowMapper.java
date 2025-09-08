@@ -21,7 +21,7 @@ public class BookingRowMapper implements RowMapper<Booking> {
         car.setRegNumber(rs.getString("reg_number"));
         car.setRentalPricePerDay(rs.getBigDecimal("rental_price_per_day"));
         car.setBrand(Brand.valueOf(rs.getString("brand")));
-        car.setElectric(rs.getBoolean("is_electric"));
+        car.setIsElectric(rs.getBoolean("is_electric"));
 
         User user = new User();
         user.setId(rs.getObject("user_id", UUID.class));

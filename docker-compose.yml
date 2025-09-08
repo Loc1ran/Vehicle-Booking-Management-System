@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
   loctran1213:
     container_name: loctran1213
-    image: loctran1213/cli-project
+    image: loctran1213/loctran-api
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/booking
     ports:
@@ -24,6 +24,18 @@ services:
       - db
     depends_on:
       - db
+    restart: unless-stopped
+  loctran1213-react:
+    container_name: loctran1213-react
+    image: loctran1213/loctran-react
+    build:
+      args:
+        api_base_url: http://localhost:8088
+      context: frontend/my-react-app
+    ports:
+      - "3000:5173"
+    depends_on:
+      - loctran1213
     restart: unless-stopped
 networks:
   db:

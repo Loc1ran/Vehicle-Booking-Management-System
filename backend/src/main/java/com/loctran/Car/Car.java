@@ -56,7 +56,7 @@ public class Car {
         this.brand = brand;
     }
 
-    public void setElectric(boolean electric) {
+    public void setIsElectric(boolean electric) {
         isElectric = electric;
     }
 

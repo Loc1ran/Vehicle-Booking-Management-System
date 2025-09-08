@@ -83,17 +83,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>11.9.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-database-postgresql</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>testcontainers</artifactId>
 			<version>1.21.3</version>
@@ -120,30 +109,22 @@
 			<scope>test</scope>
 		</dependency>
 
-</dependencies>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+
+	</dependencies>
 
 
 	<build>
 
 		<plugins>
-			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>11.7.2</version>
-				<configuration>
-					<url>jdbc:postgresql://localhost:5432/booking</url>
-					<user>ltt4456</user>
-					<password>password</password>
-					<schemas>
-						<schema>public</schema>
-					</schemas>
-					<locations>
-						<location>classpath:db/migration</location>
-					</locations>
-					<baselineOnMigrate>true</baselineOnMigrate>
-					<baselineVersion>1</baselineVersion>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

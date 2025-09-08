@@ -1,42 +1,71 @@
 import { Center, Wrap, WrapItem, Button, Spinner, Text } from '@chakra-ui/react'
 import SidebarWithHeader from '../components/shared/Sidebar.jsx';
 import {useEffect, useState} from 'react';
-import {getBooking} from "./services/client.js";
-import ProductAddToCart from '../components/products/product.jsx';
+import {getCar} from "./services/client.js";
+import ProductAddToCart from '../components/product.jsx';
+import CreateCarDrawerForm from '../components/CreateCarDrawerForm.jsx';
+import {errorNotification} from "./services/notification.js";
 
 const App = () => {
-    const [getBookings, setGetBookings] = useState([]);
+    const [getCars, setGetCars] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [err, setError] = useState("");
 
-    useEffect(() => {
+    const fetchCars = () => {
         setLoading(true);
-        getBooking().then(res => {
-            setGetBookings(res.data);
+        getCar().then(res => {
+            setGetCars(res.data);
         }).catch(err => {
-            console.log(err);
+            setError(err.response.data.message)
+            errorNotification(
+                err.code,
+                err.response.data.message,
+            )
         }).finally(() =>
         {
             setLoading(false);
         })
+    }
+
+    useEffect(() => {
+        fetchCars();
     }, [])
+
     if(loading){
         return (
             <SidebarWithHeader><Spinner color="teal.500" size="lg" /></SidebarWithHeader>
             )
     }
 
-    if(getBookings.length <= 0){
+    if(err){
         return (
-            <SidebarWithHeader><Text>No Booking Available</Text></SidebarWithHeader>
+            <SidebarWithHeader>
+                <CreateCarDrawerForm fetchCars={fetchCars}/>
+                <Text mt={4}>
+                    There an error
+                </Text>
+            </SidebarWithHeader>
+        )
+    }
+
+    if(getCars.length <= 0){
+        return (
+            <SidebarWithHeader>
+                    <CreateCarDrawerForm fetchCars={fetchCars}/>
+                <Text mt={4}>
+                    No Car Available For Rent
+                </Text>
+            </SidebarWithHeader>
         )
     }
     return (
         <SidebarWithHeader>
+            <CreateCarDrawerForm fetchCars={fetchCars}/>
             <Wrap justify={"center"} spacing={"10px"}>
-                {getBookings.map((booking,index) => (
+                {getCars.map((car,index) => (
                     <WrapItem key={index}>
-                        <ProductAddToCart
-                            {...booking}
+                        <ProductAddToCart fetchCars={fetchCars}
+                            {...car}
                         />
                     </WrapItem>
                 ))}

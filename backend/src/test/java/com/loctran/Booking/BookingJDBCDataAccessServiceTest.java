@@ -11,7 +11,6 @@ import com.loctran.User.UserRowMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -196,7 +195,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         carUpdate.setRegNumber("6666");
         carUpdate.setBrand(newBrand);
         carUpdate.setRentalPricePerDay(newRentalPrice);
-        carUpdate.setElectric(false);
+        carUpdate.setIsElectric(false);
 
         User userUpdate = new User();
         userUpdate.setId(userID);
