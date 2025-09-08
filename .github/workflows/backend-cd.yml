@@ -7,7 +7,6 @@ on:
       - main
     paths:
       - backend/**
-      - Dockerrun.aws.json
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -87,7 +86,7 @@ jobs:
           version_label: ${{ steps.build-number.outputs.BUILD_NUMBER }}
           version_description: ${{ github.SHA }}
           region: ${{ secrets.EB_REGION }}
-          deployment_package: ../Dockerrun.aws.json
+          deployment_package: Dockerrun.aws.json
       - name: Slack Message For Deployment
         run: >
           curl -X POST -H 'Content-type: application/json'
