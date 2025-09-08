@@ -10,12 +10,13 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        CorsRegistration corsRegistration = registry.addMapping("/api/**");
-        corsRegistration.allowedOriginPatterns("*");
-        corsRegistration.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS"); // ← Explicit methods, not "*"
-        corsRegistration.allowedHeaders("*");
-        corsRegistration.allowCredentials(true);
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("*")
+                .allowedHeaders("*")
+                .allowCredentials(false);
     }
 }
