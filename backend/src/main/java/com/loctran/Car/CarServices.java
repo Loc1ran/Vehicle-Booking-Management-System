@@ -61,7 +61,7 @@ public class CarServices {
         }
 
         if( updateRequest.isElectric() != car.isElectric() ){
-            car.setIsElectric(updateRequest.isElectric());
+            car.setElectric(updateRequest.isElectric());
             changes = true;
         }
 

@@ -96,7 +96,7 @@ class CarJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         carUpdate.setRegNumber("4444");
         carUpdate.setBrand(newBrand);
         carUpdate.setRentalPricePerDay(newRentalPrice);
-        carUpdate.setIsElectric(false);
+        carUpdate.setElectric(false);
 
         underTest.updateCar(carUpdate);
 

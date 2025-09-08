@@ -1,5 +1,6 @@
 package com.loctran.Car;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +16,7 @@ public class Car {
     private BigDecimal rentalPricePerDay;
     @Enumerated(EnumType.STRING)
     private Brand brand;
+    @JsonProperty("isElectric")
     private boolean isElectric;
 
     public Car(String regNumber, BigDecimal rentalPricePerDay, Brand brand, boolean isElectric) {
@@ -56,8 +58,8 @@ public class Car {
         this.brand = brand;
     }
 
-    public void setIsElectric(boolean electric) {
-        isElectric = electric;
+    public void setElectric(boolean electric) {
+        this.isElectric = electric;
     }
 
     @Override

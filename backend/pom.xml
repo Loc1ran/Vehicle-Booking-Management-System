@@ -119,6 +119,7 @@
 			<artifactId>flyway-database-postgresql</artifactId>
 		</dependency>
 
+
 	</dependencies>
 
 
@@ -218,7 +219,8 @@
 						</platforms>
 					</from>
 					<to>
-							<image>docker.io/${docker.username}/${docker.image.name}:${docker.image.tag}</image>
+							<!--suppress UnresolvedMavenProperty -->
+						<image>docker.io/${docker.username}/${docker.image.name}:${docker.image.tag}</image>
 						<tags>
 							<tag>latest</tag>
 						</tags>

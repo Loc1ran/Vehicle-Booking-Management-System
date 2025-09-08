@@ -195,7 +195,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         carUpdate.setRegNumber("6666");
         carUpdate.setBrand(newBrand);
         carUpdate.setRentalPricePerDay(newRentalPrice);
-        carUpdate.setIsElectric(false);
+        carUpdate.setElectric(false);
 
         User userUpdate = new User();
         userUpdate.setId(userID);
