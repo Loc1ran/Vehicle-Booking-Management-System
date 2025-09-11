@@ -28,7 +28,7 @@ const CreateCarDrawerForm = ({fetchCars}) => {
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton/>
-                    <DrawerHeader>Add Available Car</DrawerHeader>
+                    <DrawerHeader>Add Available Cars</DrawerHeader>
 
                     <DrawerBody>
                         <CreateCarForm fetchCars={fetchCars}/>

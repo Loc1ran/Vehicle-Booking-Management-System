@@ -35,7 +35,7 @@ jobs:
           USERNAME=loctran1213 \
           REPO=loctran-react \
           TAG=${{ steps.build-number.outputs.BUILD_NUMBER }} \
-          ../../.ci/build-publish.sh . \
+          ../../.ci/build-publish.sh "." \
             --build-arg api_base_url=http://loctran-api-env.eba-p5enpnf2.us-east-1.elasticbeanstalk.com:8080
       - name: Slack Message For Deployment
         run: >
