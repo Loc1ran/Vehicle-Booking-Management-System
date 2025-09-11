@@ -15,7 +15,7 @@
     },
         {
           "name": "loctran-api",
-          "image": "loctran1213/loctran-api:21.08.2025.01.09.31",
+          "image": "loctran1213/loctran-api:08.09.2025.19.59.10",
           "essential": true,
           "memory": 384,
           "portMappings": [
