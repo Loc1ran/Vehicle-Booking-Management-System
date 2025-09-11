@@ -10,4 +10,4 @@ docker buildx build \
     -t "${USERNAME}/${REPO}:latest" \
     "${@:2}" \
     --push \
-    .
+    "$1"

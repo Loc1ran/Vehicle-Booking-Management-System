@@ -21,7 +21,7 @@ const CreateCarDrawerForm = ({fetchCars}) => {
                 colorScheme="teal"
                 onClick={onOpen}
             >
-                Add Available Cars
+                Add Available Car
             </Button>
 
             <Drawer isOpen={isOpen} onClose={onClose} size={"xl"}>
