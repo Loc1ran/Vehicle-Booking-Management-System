@@ -1,29 +1,38 @@
 package com.loctran.User;
 
-import com.loctran.Exception.DuplicateResourceException;
 import com.loctran.Exception.RequestValidationException;
 import com.loctran.Exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final UserDAO userDAO;
+    private final UserDTOMapper userDTOMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(@Qualifier("userJDBC") UserDAO userDAO) {
+
+    public UserService(@Qualifier("userJDBC") UserDAO userDAO, UserDTOMapper userDTOMapper, PasswordEncoder passwordEncoder) {
         this.userDAO = userDAO;
+        this.userDTOMapper = userDTOMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public List<User> getUsers() {
-        return userDAO.getUsers();
+    public List<UserDTO> getUsers() {
+        return userDAO.getUsers().stream().map(userDTOMapper).collect(Collectors.toList());
     }
 
-    public User getUsersByID(UUID id) {
+    public UserDTO getUsersByID(UUID id) {
+        return userDAO.getUserById(id).map(userDTOMapper).orElseThrow(() -> new ResourceNotFound("user not found"));
+    }
 
+    public User getUserEntityByID(UUID id) {
         return userDAO.getUserById(id).orElseThrow(() -> new ResourceNotFound("user not found"));
     }
 
@@ -34,10 +43,13 @@ public class UserService {
         userDAO.deleteUser(id);
     }
 
-    public void saveUser(User user) {
-        if( user.getName() == null){
+    public void saveUser(UserRegistrationRequest userRegistrationRequest) {
+        if( userRegistrationRequest.name() == null){
             throw new RequestValidationException("name is required");
         }
+
+        User user = new User(userRegistrationRequest.name(),
+                passwordEncoder.encode(userRegistrationRequest.password()));
         userDAO.saveUser(user);
     }
 
@@ -56,5 +68,9 @@ public class UserService {
         }
 
         userDAO.updateUser(user);
+    }
+
+    public User findByName(String name) {
+        return userDAO.findByName(name).orElseThrow(() -> new ResourceNotFound("user not found"));
     }
 }

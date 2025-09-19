@@ -1,26 +1,28 @@
 package com.loctran.journey;
 
+import com.github.javafaker.Faker;
 import com.loctran.Booking.Booking;
+import com.loctran.Booking.BookingDTO;
 import com.loctran.Booking.BookingRequest;
 import com.loctran.Booking.BookingUpdateWrapper;
 import com.loctran.Car.Brand;
 import com.loctran.Car.Car;
 import com.loctran.Car.CarServices;
-import com.loctran.User.UpdateUserRequest;
-import com.loctran.User.User;
-import com.loctran.User.UserService;
+import com.loctran.User.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,116 +35,191 @@ public class BookingIntegrationTest {
     private CarServices carServices;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserDTOMapper userDTOMapper;
+    private static final Faker faker = new Faker();
 
     @Test
     void canRegisterABooking() {
-        UUID userID = UUID.randomUUID();
+        String name = faker.name().username() + "-" + System.currentTimeMillis();
         String regNumber = UUID.randomUUID().toString().substring(0, 8);
-        //create registration request
-        Car car = new Car(regNumber, new BigDecimal("322.10"), Brand.TESLA, true);
-        User user = new User(userID, "Hoa");
 
+        Car car = new Car(regNumber, new BigDecimal("322.10"), Brand.TESLA, true);
         carServices.saveCar(car);
-        userService.saveUser(user);
+
+        UserRegistrationRequest userRequest = new UserRegistrationRequest(name, "password");
+
+        String jwtToken = Objects.requireNonNull(webTestClient.post()
+                        .uri("/api/v1/users")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(userRequest), UserRegistrationRequest.class)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .returnResult(Void.class)
+                        .getResponseHeaders()
+                        .get(HttpHeaders.AUTHORIZATION))
+                .get(0);
+
+        User user = userService.findByName(name);
 
         BookingRequest request = new BookingRequest(user, regNumber);
-        // send a post request
-        webTestClient.post().uri("/api/v1/booking").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request), BookingRequest.class)
-                .exchange().expectStatus().isOk();
-        // get all booking
-        List<Booking> allBooking = webTestClient.get().uri("/api/v1/booking")
-                .accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectBodyList(new ParameterizedTypeReference<Booking>() {
-                })
-                .returnResult().getResponseBody();
 
-        assertThat(allBooking).isNotNull();
+        webTestClient.post()
+                .uri("/api/v1/booking")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), BookingRequest.class)
+                .exchange()
+                .expectStatus().isOk();
 
-        //get booking by id from api
-        Booking booking = allBooking.stream().filter(b -> b.getCars().getRegNumber().equals(regNumber)).findFirst().orElseThrow();
-        UUID bookingId = booking.getId();
+        List<BookingDTO> allBookings = webTestClient.get()
+                .uri("/api/v1/booking")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(new ParameterizedTypeReference<BookingDTO>() {})
+                .returnResult()
+                .getResponseBody();
 
-        Booking expected = new Booking(car, user);
-        expected.setId(bookingId);
+        assertThat(allBookings).isNotNull();
 
-        assertThat(allBooking).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id").contains(
-                expected
-        );
+        BookingDTO booking = allBookings.stream()
+                .filter(b -> b.car().getRegNumber().equals(regNumber))
+                .findFirst()
+                .orElseThrow();
 
-        webTestClient.get().uri("/api/v1/booking/{id}", bookingId)
-                .accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<Booking>() {
-                })
+        UUID bookingId = booking.id();
+        BookingDTO expectedBooking = new BookingDTO(bookingId, car, userDTOMapper.apply(user));
+
+        assertThat(allBookings)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .contains(expectedBooking);
+
+        webTestClient.get()
+                .uri("/api/v1/booking/{id}", bookingId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<BookingDTO>() {})
                 .isEqualTo(booking);
 
     }
 
     @Test
     void canDeleteBooking() {
-        UUID userID = UUID.randomUUID();
+        String name = faker.name().username() + "-" + System.currentTimeMillis();
         String regNumber = UUID.randomUUID().toString().substring(0, 8);
-        //create registration request
-        Car car = new Car(regNumber, new BigDecimal("322.10"), Brand.TESLA, true);
-        User user = new User(userID, "Hoa");
 
+        Car car = new Car(regNumber, new BigDecimal("322.10"), Brand.TESLA, true);
         carServices.saveCar(car);
-        userService.saveUser(user);
+
+        UserRegistrationRequest userRequest = new UserRegistrationRequest(name, "password");
+
+        String jwtToken = Objects.requireNonNull(webTestClient.post()
+                        .uri("/api/v1/users")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(userRequest), UserRegistrationRequest.class)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .returnResult(Void.class)
+                        .getResponseHeaders()
+                        .get(HttpHeaders.AUTHORIZATION))
+                .get(0);
+
+        User user = userService.findByName(name);
 
         BookingRequest request = new BookingRequest(user, regNumber);
         // send a post request
-        webTestClient.post().uri("/api/v1/booking").accept(MediaType.APPLICATION_JSON)
+        webTestClient.post().uri("/api/v1/booking")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request), BookingRequest.class)
                 .exchange().expectStatus().isOk();
         // get all booking
-        List<Booking> allBooking = webTestClient.get().uri("/api/v1/booking")
-                .accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectBodyList(new ParameterizedTypeReference<Booking>() {
+        List<BookingDTO> allBookings = webTestClient.get().uri("/api/v1/booking")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .exchange().expectStatus().isOk()
+                .expectBodyList(new ParameterizedTypeReference<BookingDTO>() {
                 })
                 .returnResult().getResponseBody();
 
-        assertThat(allBooking).isNotNull();
+        assertThat(allBookings).isNotNull();
 
         //get booking by id from api
-        Booking booking = allBooking.stream().filter(b -> b.getCars().getRegNumber().equals(regNumber)).findFirst().orElseThrow();
-        UUID bookingId = booking.getId();
+        BookingDTO booking = allBookings.stream()
+                .filter(b -> b.car().getRegNumber().equals(regNumber))
+                .findFirst()
+                .orElseThrow();
 
-        webTestClient.delete().uri("/api/v1/booking/{id}", bookingId).accept(MediaType.APPLICATION_JSON)
+        UUID bookingId = booking.id();
+
+        webTestClient.delete().uri("/api/v1/booking/{id}", bookingId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .exchange().expectStatus().isOk();
 
 
         webTestClient.get().uri("/api/v1/booking/{id}", bookingId)
-                .accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound();
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .exchange().expectStatus().isForbidden();
     }
 
     @Test
     void canUpdateBooking() {
-        UUID userID = UUID.randomUUID();
+        String name = faker.name().username() + "-" + System.currentTimeMillis();
         String regNumber = UUID.randomUUID().toString().substring(0, 8);
-        //create registration request
-        Car car = new Car(regNumber, new BigDecimal("322.10"), Brand.TESLA, true);
-        User user = new User(userID, "Hoa");
 
+        Car car = new Car(regNumber, new BigDecimal("322.10"), Brand.TESLA, true);
         carServices.saveCar(car);
-        userService.saveUser(user);
+
+        UserRegistrationRequest userRequest = new UserRegistrationRequest(name, "password");
+
+        String jwtToken = Objects.requireNonNull(webTestClient.post()
+                        .uri("/api/v1/users")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(userRequest), UserRegistrationRequest.class)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .returnResult(Void.class)
+                        .getResponseHeaders()
+                        .get(HttpHeaders.AUTHORIZATION))
+                .get(0);
+
+        User user = userService.findByName(name);
+        UUID userID = user.getId();
 
         BookingRequest request = new BookingRequest(user, regNumber);
         // send a post request
-        webTestClient.post().uri("/api/v1/booking").accept(MediaType.APPLICATION_JSON)
+        webTestClient.post().uri("/api/v1/booking")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request), BookingRequest.class)
                 .exchange().expectStatus().isOk();
         // get all booking
-        List<Booking> allBooking = webTestClient.get().uri("/api/v1/booking")
-                .accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectBodyList(new ParameterizedTypeReference<Booking>() {
+        List<BookingDTO> allBookings = webTestClient.get().uri("/api/v1/booking")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .exchange().expectStatus().isOk()
+                .expectBodyList(new ParameterizedTypeReference<BookingDTO>() {
                 })
                 .returnResult().getResponseBody();
 
-        assertThat(allBooking).isNotNull();
+        assertThat(allBookings).isNotNull();
 
         //get booking by id from api
-        Booking booking = allBooking.stream().filter(b -> b.getCars().getRegNumber().equals(regNumber)).findFirst().orElseThrow();
-        UUID bookingId = booking.getId();
+        BookingDTO booking = allBookings.stream()
+                .filter(b -> b.car().getRegNumber().equals(regNumber))
+                .findFirst()
+                .orElseThrow();
+
+        UUID bookingId = booking.id();
 
         String newName = "Loc";
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(newName);
@@ -150,19 +227,26 @@ public class BookingIntegrationTest {
                 null, null, updateUserRequest
         );
 
-        webTestClient.put().uri("/api/v1/booking/{id}", bookingId).accept(MediaType.APPLICATION_JSON)
+        webTestClient.put().uri("/api/v1/booking/{id}", bookingId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(bookingUpdateWrapper), BookingUpdateWrapper.class)
                 .exchange().expectStatus().isOk();
 
 
-        Booking updateBooking = webTestClient.get().uri("/api/v1/booking/{id}", bookingId)
-                .accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-                .expectBody(Booking.class).returnResult().getResponseBody();
+        BookingDTO updatedBooking = webTestClient.get().uri("/api/v1/booking/{id}", bookingId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(BookingDTO.class)
+                .returnResult()
+                .getResponseBody();
 
-        Booking expected = new Booking(car, new User(userID, newName));
-        expected.setId(bookingId);
-
-        assertThat(updateBooking).isEqualTo(expected);
+        assertThat(updatedBooking).isNotNull();
+        assertThat(updatedBooking.car().getRegNumber()).isEqualTo(regNumber);
+        assertThat(updatedBooking.user().name()).isEqualTo(newName);
+        assertThat(updatedBooking.user().id()).isEqualTo(userID);
     }
 }

@@ -26,6 +26,7 @@ public class BookingRowMapper implements RowMapper<Booking> {
         User user = new User();
         user.setId(rs.getObject("user_id", UUID.class));
         user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
 
         return new Booking(bookingId, car, user);
     }

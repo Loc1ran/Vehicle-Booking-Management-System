@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     private UserJDBCDataAccessService underTest;
@@ -25,7 +24,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
     @Test
     void getUsers() {
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
 
         underTest.saveUser(user);
 
@@ -37,7 +36,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     @Test
     void getUserById() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId,"Loc");
+        User user = new User(userId,"Loc", "password");
 
         underTest.saveUser(user);
 
@@ -60,7 +59,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
     @Test
     void saveUser() {
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
 
         underTest.saveUser(user);
 
@@ -72,7 +71,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
     @Test
     void deleteUser() {
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
 
         underTest.saveUser(user);
         underTest.deleteUser(user.getId());
@@ -85,7 +84,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     @Test
     void updateUser() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         underTest.saveUser(user);
 

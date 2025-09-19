@@ -1,6 +1,5 @@
 package com.loctran.User;
 
-import org.hibernate.boot.model.process.internal.UserTypeResolution;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 class UserJPADataAccessServiceTest {
@@ -47,7 +45,7 @@ class UserJPADataAccessServiceTest {
 
     @Test
     void saveUser() {
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
 
         underTest.saveUser(user);
 
@@ -65,7 +63,7 @@ class UserJPADataAccessServiceTest {
 
     @Test
     void updateUser() {
-        User updateUser = new User(UUID.randomUUID(), "Hoa");
+        User updateUser = new User(UUID.randomUUID(), "Hoa", "password");
 
         underTest.updateUser(updateUser);
 

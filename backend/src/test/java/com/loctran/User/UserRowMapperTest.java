@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +23,7 @@ class UserRowMapperTest {
 
         User actual = userRowMapper.mapRow(rs, 1);
 
-        User expected = new User(userId, "Loc");
+        User expected = new User(userId, "Loc", "password");
 
         assertThat(actual).isEqualTo(expected);
     }

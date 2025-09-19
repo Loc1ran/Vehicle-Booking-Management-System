@@ -38,11 +38,19 @@ public class UserJDBCDataAccessService implements UserDAO {
 
     @Override
     public void saveUser(User user) {
-        var sql = """
-                INSERT INTO user_info(id, name)
-                VALUES (?, ?);
-                """;
-        jdbcTemplate.update(sql, user.getId(), user.getName());
+        if (user.getId() != null) {
+            var sql = """
+                    INSERT INTO user_info(id, name, password)
+                    VALUES (?, ?, ?);
+                    """;
+            jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
+        } else{
+            var sql = """
+                       INSERT INTO user_info(name, password) 
+                       VALUES (?, ?)
+                       """;
+            jdbcTemplate.update(sql, user.getName(), user.getPassword());
+        }
     }
 
     @Override
@@ -63,5 +71,15 @@ public class UserJDBCDataAccessService implements UserDAO {
                     """;
             jdbcTemplate.update(sql, updatedUser.getName(), updatedUser.getId());
         }
+    }
+
+    @Override
+    public Optional<User> findByName(String name) {
+        var sql = """
+                SELECT *
+                FROM user_info
+                WHERE name = ?;
+                """;
+        return jdbcTemplate.query(sql, userRowMapper, name).stream().findFirst();
     }
 }

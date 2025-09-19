@@ -2,14 +2,11 @@ package com.loctran.Booking;
 
 import com.loctran.Car.Brand;
 import com.loctran.Car.Car;
-import com.loctran.Car.CarJDBCDataAccessService;
 import com.loctran.User.User;
-import com.loctran.User.UserJDBCDataAccessService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
@@ -17,9 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class BookingJPADataAccessServicesTest {
     private BookingJPADataAccessServices underTest;
@@ -54,7 +49,7 @@ class BookingJPADataAccessServicesTest {
     @Test
     void booking() {
         Car car = new Car("2213", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Ava");
+        User user = new User(UUID.randomUUID(), "Ava", "password");
 
         Booking booking = new Booking(
                 UUID.randomUUID(), car, user
@@ -99,7 +94,7 @@ class BookingJPADataAccessServicesTest {
     @Test
     void updateBooking() {
         Car car = new Car("1234", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Ava");
+        User user = new User(UUID.randomUUID(), "Ava", "password");
 
         Booking booking = new Booking(
                 UUID.randomUUID(), car, user

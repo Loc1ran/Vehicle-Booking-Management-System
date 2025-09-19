@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class BookingRowMapperTest {
@@ -34,7 +33,7 @@ class BookingRowMapperTest {
         Booking actual = bookingRowMapper.mapRow(rs, 1);
 
         Car car = new Car("1111", new BigDecimal("100"), Brand.TESLA, true);
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
         Booking expected = new Booking(
                 bookingId, car, user
         );

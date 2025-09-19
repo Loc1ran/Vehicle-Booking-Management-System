@@ -2,21 +2,21 @@ package com.loctran.User;
 
 import com.loctran.Exception.RequestValidationException;
 import com.loctran.Exception.ResourceNotFound;
-import org.aspectj.weaver.patterns.IVerificationRequired;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,34 +26,42 @@ class UserServiceTest {
     @Mock
     private UserDAO userDAO;
 
+    private UserDTOMapper userDTOMapper = new UserDTOMapper();
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     void setUp() {
-        underTest = new UserService(userDAO);
+        underTest = new UserService(userDAO, userDTOMapper, passwordEncoder);
     }
 
     @Test
     void getUsers() {
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User("Loc", "password");
+        List<User> allUser = List.of(user);
 
-        when(userDAO.getUsers()).thenReturn(List.of(user));
+        when(userDAO.getUsers()).thenReturn(allUser);
 
-        List<User> actual = underTest.getUsers();
+        List<UserDTO> expected = allUser.stream().map(userDTOMapper).toList();
 
-        assertThat(actual).isEqualTo(List.of(user));
+        List<UserDTO> actual = underTest.getUsers();
+
+        assertThat(actual).isEqualTo(expected);
         verify(userDAO).getUsers();
     }
 
     @Test
     void getUsersByID() {
         UUID userId = UUID.randomUUID();
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(userId, "Loc", "password");
 
         when(userDAO.getUserById(userId)).thenReturn(Optional.of(user));
 
-        User actual = underTest.getUsersByID(userId);
+        UserDTO expected = userDTOMapper.apply(user);
 
-        assertThat(actual).isEqualTo(user);
-        verify(userDAO).getUserById(userId);
+        UserDTO actual = underTest.getUsersByID(userId);
+
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -70,7 +78,7 @@ class UserServiceTest {
     @Test
     void deleteUser() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         when(userDAO.getUserById(userId)).thenReturn(Optional.of(user));
 
@@ -92,35 +100,37 @@ class UserServiceTest {
 
     @Test
     void saveUser() {
-        UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Loc");
+        UserRegistrationRequest request = new UserRegistrationRequest("Loc", "password");
+        String passwordHash = "!@$@!$!@$@!$$@!#$89218347124";
+
+        when(passwordEncoder.encode(request.password())).thenReturn("!@$@!$!@$@!$$@!#$89218347124");
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
 
-        underTest.saveUser(user);
+        underTest.saveUser(request);
 
         verify(userDAO).saveUser(userCaptor.capture());
 
         User captorValue = userCaptor.getValue();
 
-        assertThat(captorValue.getId()).isEqualTo(userId);
         assertThat(captorValue.getName()).isEqualTo("Loc");
+        assertThat(captorValue.getPassword()).isEqualTo(passwordHash);
 
     }
 
     @Test
     void willThrowAnExceptionWhenTryToSaveUserMissingName() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, null);
+        UserRegistrationRequest request = new UserRegistrationRequest(null, "password");
 
-        assertThatThrownBy(() -> underTest.saveUser(user)).isInstanceOf(RequestValidationException.class)
+        assertThatThrownBy(() -> underTest.saveUser(request)).isInstanceOf(RequestValidationException.class)
                 .hasMessage("name is required");
     }
 
     @Test
     void updateUser() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         when(userDAO.getUserById(userId)).thenReturn(Optional.of(user));
 
@@ -136,7 +146,7 @@ class UserServiceTest {
     @Test
     void willThrownAnExceptionWhenNoUserToUpdate() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         when(userDAO.getUserById(userId)).thenReturn(Optional.of(user));
 

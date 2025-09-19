@@ -3,17 +3,12 @@ package com.loctran.Booking;
 import com.loctran.Car.*;
 import com.loctran.Exception.RequestValidationException;
 import com.loctran.Exception.ResourceNotFound;
-import com.loctran.User.UpdateUserRequest;
-import com.loctran.User.User;
-import com.loctran.User.UserDAO;
-import com.loctran.User.UserService;
-import org.junit.jupiter.api.AfterEach;
+import com.loctran.User.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -21,7 +16,6 @@ import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,17 +27,22 @@ class BookingServicesTest {
     private CarServices carServices;
     @Mock
     private UserService userService;
+
+    private UserDTOMapper userDTOMapper = new UserDTOMapper();
+
+    private BookingDTOMapper bookingDTOMapper = new BookingDTOMapper(userDTOMapper);
+
     private BookingServices underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new BookingServices(bookingDAO, carServices, userService);
+        underTest = new BookingServices(bookingDAO, carServices, userService, bookingDTOMapper);
     }
 
     @Test
     void book() {
         Car car = new Car("7777", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
         List<Car> availableCars = List.of(car);
 
         when(carServices.getAllCars()).thenReturn(availableCars);
@@ -68,7 +67,7 @@ class BookingServicesTest {
     void willThrowAnExceptionWhenRegNumberAreNotRepresentOnBook() {
         String regNumber = "NOT_EXIST";
         Car car = new Car("7777", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
         List<Car> availableCars = List.of(car);
 
         when(carServices.getAllCars()).thenReturn(availableCars);
@@ -154,7 +153,7 @@ class BookingServicesTest {
         UUID bookingId = UUID.randomUUID();
 
         Car car = new Car("1111", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
 
         Booking booking = new Booking(bookingId, car, user);
 
@@ -181,12 +180,19 @@ class BookingServicesTest {
     @Test
     void findBookingById(){
         UUID bookingId = UUID.randomUUID();
-        Booking booking = mock(Booking.class);
+
+        Car car = new Car("1111", new BigDecimal("12.34"), Brand.TESLA, true);
+        User user = new User(UUID.randomUUID(), "Loc", "password");
+
+        Booking booking = new Booking(bookingId, car, user);
 
         when(bookingDAO.findBookingById(bookingId)).thenReturn(Optional.of(booking));
 
-        underTest.findBookingById(bookingId);
+        BookingDTO expected = bookingDTOMapper.apply(booking);
 
+        BookingDTO actual = underTest.findBookingById(bookingId);
+
+        assertThat(actual).isEqualTo(expected);
         verify(bookingDAO).findBookingById(bookingId);
     }
 
@@ -205,20 +211,20 @@ class BookingServicesTest {
 
     @Test
     void updateBooking() {
-        UUID bookingId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        UUID bookingId = UUID.randomUUID();
         String regNumber = "1111";
 
         Car car = new Car(regNumber, new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         Booking booking = new Booking(bookingId, car, user);
 
-        User newUser = new User(userId, "Hoa");
+        User newUser = new User(userId, "Hoa", "password");
         Car newCar = new Car(regNumber, new BigDecimal("32.34"), Brand.MERCEDES, false);
 
         when(bookingDAO.findBookingById(bookingId)).thenReturn(Optional.of(booking));
-        when(userService.getUsersByID(userId)).thenReturn(newUser);
+        when(userService.getUserEntityByID(userId)).thenReturn(newUser);
         when(carServices.getCar(regNumber)).thenReturn(newCar);
 
 
@@ -250,14 +256,14 @@ class BookingServicesTest {
         String regNumber = "1111";
 
         Car car = new Car(regNumber, new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         Booking booking = new Booking(bookingId, car, user);
 
-        User newUser = new User(userId, "Hoa");
+        User newUser = new User(userId, "Hoa", "password");
 
         when(bookingDAO.findBookingById(bookingId)).thenReturn(Optional.of(booking));
-        when(userService.getUsersByID(userId)).thenReturn(newUser);
+        when(userService.getUserEntityByID(userId)).thenReturn(newUser);
 
 
         UpdateBookingRequest updateBookingRequest = new UpdateBookingRequest(bookingId, newUser, null);
@@ -284,7 +290,7 @@ class BookingServicesTest {
         String regNumber = "1111";
 
         Car car = new Car(regNumber, new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         Booking booking = new Booking(bookingId, car, user);
 
@@ -320,7 +326,7 @@ class BookingServicesTest {
         String regNumber = "1111";
 
         Car car = new Car(regNumber, new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         Booking booking = new Booking(bookingId, car, user);
 
@@ -342,7 +348,7 @@ class BookingServicesTest {
         String regNumber = "1111";
 
         Car car = new Car(regNumber, new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(userId, "Loc");
+        User user = new User(userId, "Loc", "password");
 
         Booking booking = new Booking(bookingId, car, user);
 

@@ -19,7 +19,7 @@ public class UserFileDataAccess implements UserDAO {
             Scanner scanner = new Scanner(file);
             while (scanner.hasNext()) {
                 String[] split = scanner.nextLine().split(",");
-                users.add(new User(UUID.fromString(split[0]),split[1]));
+                users.add(new User(UUID.fromString(split[0]),split[1], "password"));
 
             }
             return users;
@@ -48,6 +48,11 @@ public class UserFileDataAccess implements UserDAO {
     @Override
     public void updateUser(User updatedUser) {
 
+    }
+
+    @Override
+    public Optional<User> findByName(String name) {
+        return Optional.empty();
     }
 
 }

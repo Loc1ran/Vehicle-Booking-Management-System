@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -36,7 +35,7 @@ class BookingRepositoryTest {
     void findAvailableCarsFromList() {
         Car car1 = new Car("0193", new BigDecimal("12.34"), Brand.TESLA, true);
         Car car2 = new Car("2105", new BigDecimal("32.34"), Brand.MERCEDES, false);
-        User user = new User("Loc");
+        User user = new User("Loc", "password");
 
         car1 = carRepository.save(car1);
         car2 = carRepository.save(car2);
@@ -58,7 +57,7 @@ class BookingRepositoryTest {
     void findBookingsByUserId() {
         Car car1 = new Car("1111", new BigDecimal("12.34"), Brand.TESLA, true);
         Car car2 = new Car("2222", new BigDecimal("32.34"), Brand.MERCEDES, false);
-        User user = new User("Amanda");
+        User user = new User("Amanda", "password");
 
         car1 = carRepository.save(car1);
         car2 = carRepository.save(car2);

@@ -9,6 +9,7 @@ import com.loctran.Exception.RequestValidationException;
 import com.loctran.Exception.ResourceNotFound;
 import com.loctran.User.UpdateUserRequest;
 import com.loctran.User.User;
+import com.loctran.User.UserDAO;
 import com.loctran.User.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,29 +18,36 @@ import javax.swing.text.View;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServices {
     private final BookingDAO bookingDAO;
     private final CarServices carServices;
     private final UserService userService;
+    private final BookingDTOMapper bookingDTOMapper;
 
 
-    public BookingServices(@Qualifier("bookingJDBC") BookingDAO bookingDAO, CarServices carServices, UserService userService) {
+    public BookingServices(@Qualifier("bookingJDBC") BookingDAO bookingDAO, CarServices carServices, UserService userService, BookingDTOMapper bookingDTOMapper) {
         this.bookingDAO = bookingDAO;
         this.carServices = carServices;
         this.userService = userService;
+        this.bookingDTOMapper = bookingDTOMapper;
     }
 
     public void Book(User user, String regNumber){
         List<Car> cars = getAvailableCars();
-         cars.stream().filter(c -> c.getRegNumber().equals(regNumber)).findFirst().map(car -> {
-            Car getcar = carServices.getCar(regNumber);
-            // void for JPA because I have auto generated UUID
-            UUID id = UUID.randomUUID();
-            bookingDAO.Booking(new Booking(id, getcar, user));
-            return id;
-        }).orElseThrow(() -> new IllegalStateException("Invalid regNumber : " + regNumber));
+
+        cars.stream()
+                .filter(c -> c.getRegNumber().equals(regNumber))
+                .findFirst()
+                .ifPresentOrElse(car -> {
+                    Car getcar = carServices.getCar(regNumber);
+                    bookingDAO.Booking(new Booking(getcar, user));
+                }, () -> {
+                    throw new IllegalStateException("Invalid regNumber : " + regNumber);
+                });
+
     }
 
     public List<Booking> ViewAllUserBooking(UUID id){
@@ -63,7 +71,11 @@ public class BookingServices {
 
     }
 
-    public List<Booking> viewAllBooking(){
+    public List<BookingDTO> viewAllBooking(){
+        return bookingDAO.ViewBooking().stream().map(bookingDTOMapper).collect(Collectors.toList());
+    }
+
+    public List<Booking> viewAllBookingEntity(){
         return bookingDAO.ViewBooking();
     }
 
@@ -74,13 +86,18 @@ public class BookingServices {
         bookingDAO.deleteBooking(id);
     }
 
-    public Booking findBookingById(UUID bookingId){
+    public BookingDTO findBookingById(UUID bookingId){
+        return bookingDAO.findBookingById(bookingId).map(bookingDTOMapper)
+                .orElseThrow(() -> new ResourceNotFound("No Booking with id: " + bookingId));
+    }
+
+    public Booking findBookingEntityById(UUID bookingId){
         return bookingDAO.findBookingById(bookingId)
                 .orElseThrow(() -> new ResourceNotFound("No Booking with id: " + bookingId));
     }
 
     public void updateBooking(UUID uuid, UpdateBookingRequest bookingRequest, UpdateCarRequest updateCarRequest, UpdateUserRequest updateUserRequest){
-        Booking booking = findBookingById(uuid);
+        Booking booking = bookingDAO.findBookingById(uuid).orElseThrow(() -> new ResourceNotFound("No Booking with id: " + uuid));
         boolean changes = false;
 
         if( bookingRequest != null && bookingRequest.id() != null && !bookingRequest.id().equals(booking.getId()) ){
@@ -93,7 +110,7 @@ public class BookingServices {
         if (updateUserRequest != null && updateUserRequest.hasChanges(user)){
             UUID userId = booking.getUsers().getId();
             userService.updateUser(userId, updateUserRequest);
-            booking.setUsers(userService.getUsersByID(userId));
+            booking.setUsers(userService.getUserEntityByID(userId));
             changes = true;
         }
 

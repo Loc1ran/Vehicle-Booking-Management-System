@@ -60,7 +60,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     void viewBooking() {
         //Given
         Car car = new Car("1234", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
 
         carJDBCDataAccessService.saveCar(car);
         userJDBCDataAccessService.saveUser(user);
@@ -80,7 +80,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     @Test
     void booking() {
         Car car = new Car("2213", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Ava");
+        User user = new User(UUID.randomUUID(), "Ava", "password");
 
         carJDBCDataAccessService.saveCar(car);
         userJDBCDataAccessService.saveUser(user);
@@ -100,7 +100,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     void availableCars() {
         Car car1 = new Car("0193", new BigDecimal("12.34"), Brand.TESLA, true);
         Car car2 = new Car("2105", new BigDecimal("32.34"), Brand.MERCEDES, false);
-        User user = new User(UUID.randomUUID(), "Loc");
+        User user = new User(UUID.randomUUID(), "Loc", "password");
 
         carJDBCDataAccessService.saveCar(car1);
         carJDBCDataAccessService.saveCar(car2);
@@ -122,7 +122,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     @Test
     void deleteBooking() {
         Car car = new Car("7777", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Ana");
+        User user = new User(UUID.randomUUID(), "Ana", "password");
 
         carJDBCDataAccessService.saveCar(car);
         userJDBCDataAccessService.saveUser(user);
@@ -147,7 +147,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         UUID userId = UUID.randomUUID();
         Car car1 = new Car("1111", new BigDecimal("12.34"), Brand.TESLA, true);
         Car car2 = new Car("2222", new BigDecimal("32.34"), Brand.MERCEDES, false);
-        User user = new User(userId, "Amanda");
+        User user = new User(userId, "Amanda", "password");
 
         carJDBCDataAccessService.saveCar(car1);
         carJDBCDataAccessService.saveCar(car2);
@@ -174,7 +174,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         UUID userID = UUID.randomUUID();
 
         Car car = new Car("6666", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(userID, "Ana");
+        User user = new User(userID, "Ana", "password");
 
         carJDBCDataAccessService.saveCar(car);
         userJDBCDataAccessService.saveUser(user);
@@ -220,7 +220,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     @Test
     void findBookingById() {
         Car car = new Car("2341", new BigDecimal("12.34"), Brand.TESLA, true);
-        User user = new User(UUID.randomUUID(), "Jas");
+        User user = new User(UUID.randomUUID(), "Jas", "password");
 
         carJDBCDataAccessService.saveCar(car);
         userJDBCDataAccessService.saveUser(user);

@@ -39,7 +39,8 @@ public class BookingJDBCDataAccessService implements BookingDAO{
             c.is_electric,
         
             u.id AS user_id,
-            u.name
+            u.name,
+            u.password
         
         FROM booking b
         JOIN car c ON b.car_id = c.reg_number
@@ -51,12 +52,22 @@ public class BookingJDBCDataAccessService implements BookingDAO{
 
     @Override
     public void Booking(Booking booking) {
-        var sql = """
+        if ( booking.getId() == null){
+            var sql = """
+                INSERT INTO Booking (car_id, user_id)
+                VALUES (?, ?)
+                """;
+            int result = jdbcTemplate.update(sql, booking.getCars().getRegNumber(), booking.getUsers().getId());
+            System.out.println("jdbcTemplate update result :" + result);
+        } else{
+            var sql = """
                 INSERT INTO Booking (id, car_id, user_id)
                 VALUES (?, ?, ?)
                 """;
-        int result = jdbcTemplate.update(sql, booking.getId(), booking.getCars().getRegNumber(), booking.getUsers().getId());
-        System.out.println("jdbcTemplate update result :" + result);
+            int result = jdbcTemplate.update(sql, booking.getId(), booking.getCars().getRegNumber(), booking.getUsers().getId());
+            System.out.println("jdbcTemplate update result :" + result);
+        }
+
 
     }
 
@@ -106,7 +117,8 @@ public class BookingJDBCDataAccessService implements BookingDAO{
                 c.is_electric,
                 
                 u.id AS user_id,
-                u.name
+                u.name,
+                u.password
                 
                 FROM booking b
                 JOIN car c ON b.car_id = c.reg_number
@@ -149,7 +161,8 @@ public class BookingJDBCDataAccessService implements BookingDAO{
             c.is_electric,
         
             u.id AS user_id,
-            u.name
+            u.name,
+            u.password
         
         FROM booking b
         JOIN car c ON b.car_id = c.reg_number

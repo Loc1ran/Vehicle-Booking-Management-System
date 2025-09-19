@@ -18,12 +18,12 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getAllBookings() {
+    public List<BookingDTO> getAllBookings() {
         return bookingServices.viewAllBooking();
     }
 
     @GetMapping("{uuid}")
-    public Booking getBookingById(@PathVariable("uuid") UUID id) {
+    public BookingDTO getBookingById(@PathVariable("uuid") UUID id) {
         return bookingServices.findBookingById(id);
     }
 

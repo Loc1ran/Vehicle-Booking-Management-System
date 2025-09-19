@@ -17,7 +17,7 @@ public class UserFakerDataAccessService implements UserDAO{
         List<User> users = new ArrayList<>();
 
         for (int i = 0; i < 20; i++) {
-            users.add(new User(UUID.randomUUID(), faker.name().name()));
+            users.add(new User(UUID.randomUUID(), faker.name().name(), "password"));
         }
 
         return users;
@@ -42,6 +42,11 @@ public class UserFakerDataAccessService implements UserDAO{
     @Override
     public void updateUser(User updatedUser) {
 
+    }
+
+    @Override
+    public Optional<User> findByName(String name) {
+        return Optional.empty();
     }
 
 
