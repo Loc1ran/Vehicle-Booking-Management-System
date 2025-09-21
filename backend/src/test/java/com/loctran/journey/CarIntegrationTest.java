@@ -115,7 +115,7 @@ public class CarIntegrationTest {
         webTestClient.get().uri("/api/v1/cars/{regNumber}", regNumber)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                .exchange().expectStatus().isForbidden();
+                .exchange().expectStatus().isNotFound();
     }
 
     @Test

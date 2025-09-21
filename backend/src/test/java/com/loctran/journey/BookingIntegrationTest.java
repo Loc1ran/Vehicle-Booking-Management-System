@@ -167,7 +167,7 @@ public class BookingIntegrationTest {
         webTestClient.get().uri("/api/v1/booking/{id}", bookingId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                .exchange().expectStatus().isForbidden();
+                .exchange().expectStatus().isNotFound();
     }
 
     @Test

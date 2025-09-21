@@ -66,10 +66,15 @@ public class UserIntegrationTest {
     @Test
     void canDeleteUser() {
         String name = faker.name().username() + "-" + System.currentTimeMillis();
-        UserRegistrationRequest request = new UserRegistrationRequest(name, "password");
+        UserRegistrationRequest request1 = new UserRegistrationRequest(name, "password");
+        UserRegistrationRequest request2 = new UserRegistrationRequest(name + "us", "password");
+
+        webTestClient.post().uri("/api/v1/users").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request1), User.class)
+                .exchange().expectStatus().isOk();
 
         String jwtToken = Objects.requireNonNull(webTestClient.post().uri("/api/v1/users").accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request), User.class)
+                        .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request2), User.class)
                         .exchange().expectStatus().isOk().returnResult(Void.class)
                         .getResponseHeaders()
                         .get(HttpHeaders.AUTHORIZATION))
@@ -95,7 +100,7 @@ public class UserIntegrationTest {
 
         webTestClient.get().uri("/api/v1/users/{userId}", id).accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                .exchange().expectStatus().isForbidden();
+                .exchange().expectStatus().isNotFound();
 
     }
 
