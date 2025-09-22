@@ -145,7 +145,7 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${jsonwebtoken.version}</version>
-			<scope>jsonwebtoken</scope>
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>
