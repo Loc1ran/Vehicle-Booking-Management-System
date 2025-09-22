@@ -18,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserService(@Qualifier("userJDBC") UserDAO userDAO, UserDTOMapper userDTOMapper, PasswordEncoder passwordEncoder) {
+    public UserService(@Qualifier("userJPA") UserDAO userDAO, UserDTOMapper userDTOMapper, PasswordEncoder passwordEncoder) {
         this.userDAO = userDAO;
         this.userDTOMapper = userDTOMapper;
         this.passwordEncoder = passwordEncoder;
