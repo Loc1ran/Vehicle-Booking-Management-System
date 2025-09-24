@@ -35,9 +35,7 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserRegistrationRequest request) {
         userService.saveUser(request);
 
-        User savedUser = userService.findByName(request.name());
-
-        String jwtToken = jwtUtil.issueToken(String.valueOf(savedUser.getId()), "ROLE_USER");
+        String jwtToken = jwtUtil.issueToken(request.name(), "ROLE_USER");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, jwtToken)

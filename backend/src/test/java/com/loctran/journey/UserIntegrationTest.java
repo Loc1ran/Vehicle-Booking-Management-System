@@ -52,7 +52,7 @@ public class UserIntegrationTest {
         //get user by id from api
         UUID id = getAllUsers.stream().filter(u -> u.name().equals(name)).findFirst().orElseThrow().id();
 
-        UserDTO expectedUser = new UserDTO(id, name, List.of("ROLE_USER"), String.valueOf(id));
+        UserDTO expectedUser = new UserDTO(id, name, List.of("ROLE_USER"), name);
 
         assertThat(getAllUsers).contains(expectedUser);
 
@@ -108,9 +108,17 @@ public class UserIntegrationTest {
     void canUpdateUser() {
         String name = faker.name().username() + "-" + System.currentTimeMillis();
         UserRegistrationRequest request = new UserRegistrationRequest(name, "password");
+        UserRegistrationRequest request2 = new UserRegistrationRequest(name + "us", "password");
+
+        webTestClient.post().uri("/api/v1/users").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request), User.class)
+                .exchange().expectStatus().isOk().returnResult(Void.class)
+                .getResponseHeaders()
+                .get(HttpHeaders.AUTHORIZATION)
+                .get(0);
 
         String jwtToken = webTestClient.post().uri("/api/v1/users").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request), User.class)
+                .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request2), User.class)
                 .exchange().expectStatus().isOk().returnResult(Void.class)
                 .getResponseHeaders()
                 .get(HttpHeaders.AUTHORIZATION)
@@ -128,7 +136,7 @@ public class UserIntegrationTest {
 
         //get user by id from api
         UUID id = getAllUsers.stream().filter(u -> u.name().equals(name)).findFirst().orElseThrow().id();
-        String newName = "Loc";
+        String newName = faker.name().username() + "-" + System.currentTimeMillis();
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(newName);
 
         webTestClient.put().uri("/api/v1/users/{userId}", id)
@@ -143,7 +151,7 @@ public class UserIntegrationTest {
                 .exchange().expectStatus().isOk().expectBody(new ParameterizedTypeReference<UserDTO>() {})
                 .returnResult().getResponseBody();
 
-        UserDTO expected = new UserDTO(id, newName, List.of("ROLE_USER"), String.valueOf(id));
+        UserDTO expected = new UserDTO(id, newName, List.of("ROLE_USER"), newName);
 
         assertThat(actual).isEqualTo(expected);
     }

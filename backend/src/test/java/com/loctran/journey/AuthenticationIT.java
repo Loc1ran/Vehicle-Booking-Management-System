@@ -42,29 +42,17 @@ public class AuthenticationIT {
         String name = faker.name().username() + "-" + System.currentTimeMillis();
         UserRegistrationRequest request = new UserRegistrationRequest(name, "password");
 
-
-        String jwtToken = Objects.requireNonNull(webTestClient.post().uri("/api/v1/users").accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(Mono.just(request), User.class)
-                        .exchange().expectStatus().isOk().returnResult(Void.class)
-                        .getResponseHeaders()
-                        .get(HttpHeaders.AUTHORIZATION))
-                .get(0);
-
         //get All users
-        List<UserDTO> getAllUsers = webTestClient.get().uri("/api/v1/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                .exchange().expectStatus().isOk()
-                .expectBodyList(new ParameterizedTypeReference<UserDTO>() {
-                }).returnResult().getResponseBody();
-
-        assert getAllUsers != null;
-        UUID id = getAllUsers.stream().filter(u -> u.name().equals(name)).findFirst().orElseThrow().id();
-
         AuthenticationRequest authenticationRequest = new AuthenticationRequest(
-                String.valueOf(id),"password"
+                name,"password"
         );
+
+        webTestClient.post().uri(USER_PATH)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), UserRegistrationRequest.class)
+                .exchange().expectStatus().isOk();
+
 
 
         EntityExchangeResult<AuthenticationResponse> result = webTestClient.post().uri(AUTH_PATH + "/login")
@@ -88,7 +76,7 @@ public class AuthenticationIT {
         assertThat(jwtUtil.isTokenValid(loginToken, userDTO.username())).isTrue();
 
         assertThat(userDTO.name()).isEqualTo(name);
-        assertThat(userDTO.username()).isEqualTo(String.valueOf(id));
+        assertThat(userDTO.username()).isEqualTo(name);
         assertThat(userDTO.roles()).isEqualTo(List.of("ROLE_USER"));
     }
 }

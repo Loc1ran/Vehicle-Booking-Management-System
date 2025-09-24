@@ -1,5 +1,6 @@
 package com.loctran.User;
 
+import com.github.javafaker.Faker;
 import com.loctran.AbstractDaoUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     private UserJDBCDataAccessService underTest;
     private final UserRowMapper userRowMapper = new UserRowMapper();
+    private static final Faker faker = new Faker();
 
     @BeforeEach
     void setUp() {
@@ -24,7 +26,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
     @Test
     void getUsers() {
-        User user = new User(UUID.randomUUID(), "Loc", "password");
+        User user = new User(UUID.randomUUID(), faker.name().username() + "-" + System.currentTimeMillis(), "password");
 
         underTest.saveUser(user);
 
@@ -35,8 +37,9 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
     @Test
     void getUserById() {
+        String name = faker.name().username() + "-" + System.currentTimeMillis();
         UUID userId = UUID.randomUUID();
-        User user = new User(userId,"Loc", "password");
+        User user = new User(userId, name, "password");
 
         underTest.saveUser(user);
 
@@ -44,7 +47,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
         assertThat(actual).isPresent().hasValueSatisfying(u -> {
                 assertThat(u.getId()).isEqualTo(userId);
-                assertThat(u.getName()).isEqualTo("Loc");
+                assertThat(u.getName()).isEqualTo(name);
         });
     }
 
@@ -71,7 +74,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
     @Test
     void deleteUser() {
-        User user = new User(UUID.randomUUID(), "Loc", "password");
+        User user = new User(UUID.randomUUID(), faker.name().username() + "-" + System.currentTimeMillis(), "password");
 
         underTest.saveUser(user);
         underTest.deleteUser(user.getId());
@@ -84,7 +87,7 @@ class UserJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
     @Test
     void updateUser() {
         UUID userId = UUID.randomUUID();
-        User user = new User(userId, "Loc", "password");
+        User user = new User(userId, faker.name().username() + "-" + System.currentTimeMillis(), "password");
 
         underTest.saveUser(user);
 

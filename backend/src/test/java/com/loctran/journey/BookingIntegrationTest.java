@@ -8,6 +8,7 @@ import com.loctran.Booking.BookingUpdateWrapper;
 import com.loctran.Car.Brand;
 import com.loctran.Car.Car;
 import com.loctran.Car.CarServices;
+import com.loctran.Car.UpdateCarRequest;
 import com.loctran.User.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -193,7 +194,6 @@ public class BookingIntegrationTest {
                 .get(0);
 
         User user = userService.findByName(name);
-        UUID userID = user.getId();
 
         BookingRequest request = new BookingRequest(user, regNumber);
         // send a post request
@@ -221,10 +221,10 @@ public class BookingIntegrationTest {
 
         UUID bookingId = booking.id();
 
-        String newName = "Loc";
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(newName);
+        String newPrice = "123.21";
+        UpdateCarRequest updateCarRequest = new UpdateCarRequest(regNumber, new BigDecimal(newPrice), null, true );
         BookingUpdateWrapper bookingUpdateWrapper = new BookingUpdateWrapper(
-                null, null, updateUserRequest
+                null, updateCarRequest, null
         );
 
         webTestClient.put().uri("/api/v1/booking/{id}", bookingId)
@@ -246,7 +246,9 @@ public class BookingIntegrationTest {
 
         assertThat(updatedBooking).isNotNull();
         assertThat(updatedBooking.car().getRegNumber()).isEqualTo(regNumber);
-        assertThat(updatedBooking.user().name()).isEqualTo(newName);
-        assertThat(updatedBooking.user().id()).isEqualTo(userID);
+        assertThat(updatedBooking.car().getRentalPricePerDay()).isEqualTo(newPrice);
+        assertThat(updatedBooking.car().getBrand()).isEqualTo(Brand.TESLA);
+        assertThat(updatedBooking.car().isElectric()).isEqualTo(true);
+        assertThat(updatedBooking.user()).isEqualTo(userDTOMapper.apply(user));
     }
 }

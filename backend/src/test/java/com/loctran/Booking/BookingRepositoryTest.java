@@ -1,5 +1,6 @@
 package com.loctran.Booking;
 
+import com.github.javafaker.Faker;
 import com.loctran.Car.Brand;
 import com.loctran.Car.Car;
 import com.loctran.Car.CarRepository;
@@ -25,6 +26,7 @@ class BookingRepositoryTest {
     UserRepository userRepository;
     @Autowired
     CarRepository carRepository;
+    Faker faker = new Faker();
 
 
     @BeforeEach
@@ -35,7 +37,7 @@ class BookingRepositoryTest {
     void findAvailableCarsFromList() {
         Car car1 = new Car("0193", new BigDecimal("12.34"), Brand.TESLA, true);
         Car car2 = new Car("2105", new BigDecimal("32.34"), Brand.MERCEDES, false);
-        User user = new User("Loc", "password");
+        User user = new User(faker.name().username() + "-" + System.currentTimeMillis(), "password");
 
         car1 = carRepository.save(car1);
         car2 = carRepository.save(car2);

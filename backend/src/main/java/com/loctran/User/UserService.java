@@ -1,5 +1,6 @@
 package com.loctran.User;
 
+import com.loctran.Exception.DuplicateResourceException;
 import com.loctran.Exception.RequestValidationException;
 import com.loctran.Exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -7,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,19 +44,27 @@ public class UserService {
     }
 
     public void saveUser(UserRegistrationRequest userRegistrationRequest) {
-        if( userRegistrationRequest.name() == null){
+        if( userRegistrationRequest.name() == null) {
             throw new RequestValidationException("name is required");
         }
 
-        User user = new User(userRegistrationRequest.name(),
-                passwordEncoder.encode(userRegistrationRequest.password()));
-        userDAO.saveUser(user);
+        try {
+            User user = new User(userRegistrationRequest.name(),
+                    passwordEncoder.encode(userRegistrationRequest.password()));
+            userDAO.saveUser(user);
+        } catch (Exception e) {
+            throw new DuplicateResourceException("username already exists");
+        }
+
     }
 
     public void updateUser(UUID id, UpdateUserRequest userRequest) {
         User user = userDAO.getUserById(id).orElseThrow(() -> new ResourceNotFound("user not found"));
         boolean changes = false;
 
+        if(userDAO.findByName(userRequest.name()).isPresent()){
+            throw new DuplicateResourceException("username already exists");
+        }
 
         if ( userRequest.name() != null && !userRequest.name().equals(user.getName())) {
             user.setName(userRequest.name());
