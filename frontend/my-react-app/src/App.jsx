@@ -40,7 +40,7 @@ const App = () => {
     if(err){
         return (
             <SidebarWithHeader>
-                <CreateCarDrawerForm fetchCars={fetchCars}/>
+                <CreateCarDrawerForm fetchCars={ fetchCars }/>
                 <Text mt={4}>
                     There an error
                 </Text>
