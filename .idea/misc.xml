@@ -7,7 +7,18 @@
         <option value="$PROJECT_DIR$/CLI-Project/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/backend/pom.xml" />
+        <option value="$PROJECT_DIR$/CLI-Project1/pom.xml" />
+        <option value="$PROJECT_DIR$/frontend/frontend/pom.xml" />
+        <option value="$PROJECT_DIR$/frontend/untitled/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/CLI-Project/pom.xml" />
+        <option value="$PROJECT_DIR$/CLI-Project1/pom.xml" />
+        <option value="$PROJECT_DIR$/frontend/frontend/pom.xml" />
+        <option value="$PROJECT_DIR$/frontend/untitled/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="PWA">

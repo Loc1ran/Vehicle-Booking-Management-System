@@ -7,8 +7,8 @@ import {
     AlertDialogOverlay, Button,
     useDisclosure
 } from "@chakra-ui/react";
-import {deleteCar} from "../src/services/client.js";
-import {errorNotification, successNotification} from "../src/services/notification.js";
+import {deleteCar} from "../../services/client.js";
+import {errorNotification, successNotification} from "../../services/notification.js";
 
 const DeleteCarButton = ( {regNumber, fetchCars}) => {
     const { isOpen, onOpen, onClose } = useDisclosure()

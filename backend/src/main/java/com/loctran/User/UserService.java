@@ -48,13 +48,13 @@ public class UserService {
             throw new RequestValidationException("name is required");
         }
 
-        try {
-            User user = new User(userRegistrationRequest.name(),
-                    passwordEncoder.encode(userRegistrationRequest.password()));
-            userDAO.saveUser(user);
-        } catch (Exception e) {
-            throw new DuplicateResourceException("username already exists");
+        if( userDAO.findByName(userRegistrationRequest.name()).isPresent() ) {
+            throw new DuplicateResourceException("name already exists");
         }
+
+        User user = new User(userRegistrationRequest.name(),
+                passwordEncoder.encode(userRegistrationRequest.password()));
+        userDAO.saveUser(user);
 
     }
 

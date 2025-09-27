@@ -1,9 +1,9 @@
 import { Center, Wrap, WrapItem, Button, Spinner, Text } from '@chakra-ui/react'
-import SidebarWithHeader from '../components/shared/Sidebar.jsx';
+import SidebarWithHeader from '../src/components/shared/Sidebar.jsx';
 import {useEffect, useState} from 'react';
 import {getCar} from "./services/client.js";
-import ProductAddToCart from '../components/product.jsx';
-import CreateCarDrawerForm from '../components/CreateCarDrawerForm.jsx';
+import ProductAddToCart from '../src/components/car/product.jsx';
+import CreateCarDrawerForm from '../src/components/car/CreateCarDrawerForm.jsx';
 import {errorNotification} from "./services/notification.js";
 
 const App = () => {
