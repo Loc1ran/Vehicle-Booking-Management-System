@@ -3,7 +3,7 @@
   "containerDefinitions": [
     {
       "name": "loctran-react",
-      "image": "loctran1213/loctran-react:22.09.2025.01.44.23",
+      "image": "loctran1213/loctran-react:27.09.2025.23.14.03",
       "essential": true,
       "memory": 768,
       "portMappings": [
