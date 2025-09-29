@@ -13,7 +13,7 @@ const AuthContext = createContext({});
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    useEffect( () => {
+    const setUserFromToken = () => {
         let jwtToken = localStorage.getItem("access_token");
         if (jwtToken){
             jwtToken = jwtDecode(jwtToken);
@@ -21,9 +21,11 @@ const AuthProvider = ({ children }) => {
                 username: jwtToken.sub,
                 roles: jwtToken.scopes
             })
-
         }
+    }
 
+    useEffect( () => {
+        setUserFromToken();
     }, [])
 
     const login = async (usernameAndPassword) => {
@@ -71,7 +73,8 @@ const AuthProvider = ({ children }) => {
         user,
         login,
         logout,
-        isUserAuthenticated
+        isUserAuthenticated,
+        setUserFromToken,
     }}>
             {children}
         </AuthContext.Provider>)

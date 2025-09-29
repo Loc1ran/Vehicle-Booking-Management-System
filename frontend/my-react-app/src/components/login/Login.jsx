@@ -13,7 +13,8 @@ import {
     Image,
     Box,
     Alert,
-    AlertIcon
+    AlertIcon,
+    Link
 } from '@chakra-ui/react';
 import {Formik, Form, useField} from 'formik';
 import * as Yup from 'yup';
@@ -47,7 +48,7 @@ const LoginForm = () => {
         <Formik
             validateOnMount = {true}
             validationSchema ={Yup.object({
-                username: Yup.string("Enter username").required('Username is required'),
+                username: Yup.string().required('Username is required'),
                 password: Yup.string().max(20).required('Password is required')
             })
             }
@@ -84,7 +85,13 @@ const LoginForm = () => {
                             placeholder={"Enter password"}
                         ></MyTextInput>
 
-                        <Button
+                        <Stack pt={6}>
+                            <Text align={'center'} mb={-10} mt={-10} >
+                                Not a user? <Link color={'blue.400'} href="/register">Sign up</Link>
+                            </Text>
+                        </Stack>
+
+                        <Button mt = {-7}
                             type={"submit"}
                             disabled={!isValid || isSubmitting}>
                             Login
