@@ -2,34 +2,22 @@
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
     {
-      "name": "loctran-react",
-      "image": "loctran1213/loctran-react:27.09.2025.23.14.03",
+      "name": "loctran-api",
+      "image": "loctran1213/loctran-api:24.09.2025.00.05.16",
       "essential": true,
-      "memory": 768,
+      "memory": 384,
       "portMappings": [
         {
           "hostPort": 80,
-          "containerPort": 5173
+          "containerPort": 8080
         }
-      ]
-    },
+      ],
+      "environment" : [
         {
-          "name": "loctran-api",
-          "image": "loctran1213/loctran-api:24.09.2025.00.05.16",
-          "essential": true,
-          "memory": 384,
-          "portMappings": [
-            {
-              "hostPort": 8080,
-              "containerPort": 8080
-            }
-          ],
-          "environment" : [
-            {
-              "name": "SPRING_DATASOURCE_URL",
-              "value": "jdbc:postgresql://awseb-e-mppuptbhjt-stack-awsebrdsdatabase-3hhc9rcf7zux.cunyecaycv3f.us-east-1.rds.amazonaws.com:5432/booking"
+          "name": "SPRING_DATASOURCE_URL",
+          "value": "jdbc:postgresql://awseb-e-4299pdszm3-stack-awsebrdsdatabase-2drl8nqbozeb.cunyecaycv3f.us-east-1.rds.amazonaws.com:5432/ebdb"
 
-            }
+        }
       ]
     }
   ]
