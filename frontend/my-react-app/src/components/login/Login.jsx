@@ -56,7 +56,7 @@ const LoginForm = () => {
             onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(true);
                 login(values).then(res => {
-                    navigate("/dashboard")
+                    navigate("/dashboard/cars")
                     console.log("Login Successfully");
                 }).catch ( err => {
                     errorNotification(
