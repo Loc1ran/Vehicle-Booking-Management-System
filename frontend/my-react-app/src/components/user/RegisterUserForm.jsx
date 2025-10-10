@@ -144,7 +144,7 @@ const RegisterUserForm = () => {
                         <SignUpForm onSuccess={(token) => {
                             localStorage.setItem("access_token", token);
                             setUserFromToken();
-                            navigate("/dashboard");
+                            navigate("/dashboard/cars");
                         }}/>
                 </Box>
             </Stack>
