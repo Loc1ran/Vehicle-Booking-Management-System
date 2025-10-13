@@ -1,5 +1,7 @@
 package com.loctran.Car;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,7 +17,8 @@ public class CarJPADataAccessServices implements CarDAO{
 
     @Override
     public List<Car> getCars(){
-        return carRepository.findAll();
+        Page<Car> page = carRepository.findAll(Pageable.ofSize(100));
+        return page.getContent();
     }
 
     @Override

@@ -3,12 +3,17 @@ package com.loctran.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
 
 class UserJPADataAccessServiceTest {
     private UserJPADataAccessService underTest;
@@ -29,9 +34,18 @@ class UserJPADataAccessServiceTest {
 
     @Test
     void getUsers() {
-        underTest.getUsers();
+        Page<User> page = mock(Page.class);
+        List<User> users = List.of(new User());
 
-        verify(userRepository).findAll();
+        when(page.getContent()).thenReturn(users);
+        when(userRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        List<User> expected = underTest.getUsers();
+
+        assertThat(expected).isEqualTo(users);
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+        verify(userRepository).findAll(pageableCaptor.capture());
+        assertThat(pageableCaptor.getValue()).isEqualTo(Pageable.ofSize(1000));
     }
 
     @Test

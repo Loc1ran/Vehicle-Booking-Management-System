@@ -2,8 +2,11 @@ package com.loctran.Booking;
 
 import com.loctran.Car.Car;
 import com.loctran.Exception.ResourceNotFound;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +20,8 @@ public class BookingJPADataAccessServices implements BookingDAO{
     }
     @Override
     public List<Booking> ViewBooking() {
-        return bookingRepository.findAll();
+        Page<Booking> page = bookingRepository.findAll(Pageable.ofSize(100));
+        return page.getContent();
     }
 
     @Override

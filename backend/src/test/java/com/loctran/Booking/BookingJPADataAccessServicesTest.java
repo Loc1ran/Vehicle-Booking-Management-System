@@ -6,15 +6,19 @@ import com.loctran.User.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.*;
 
 class BookingJPADataAccessServicesTest {
     private BookingJPADataAccessServices underTest;
@@ -39,11 +43,20 @@ class BookingJPADataAccessServicesTest {
 
     @Test
     void viewBooking() {
+        Page<Booking> page = mock(Page.class);
+        List<Booking> bookings = Arrays.asList(new Booking());
+
+        when(page.getContent()).thenReturn(bookings);
+        when(bookingRepository.findAll(any(Pageable.class))).thenReturn(page);
+
         // When
-        underTest.ViewBooking();
+        List<Booking> expected = underTest.ViewBooking();
 
         // Then
-        verify(bookingRepository).findAll();
+        assertThat(expected).isEqualTo(bookings);
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        verify(bookingRepository).findAll(captor.capture());
+        assertThat(captor.getValue()).isEqualTo(Pageable.ofSize(100));
     }
 
     @Test

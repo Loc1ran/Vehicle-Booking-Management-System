@@ -21,7 +21,8 @@ public class CarJDBCDataAccessService implements CarDAO{
     public List<Car> getCars() {
         var sql = """
                 SELECT *
-                FROM car;
+                FROM car
+                LIMIT 100;
                 """;
 
 

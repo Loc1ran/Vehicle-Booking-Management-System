@@ -1,15 +1,24 @@
 package com.loctran.Car;
 
+import com.loctran.Booking.Booking;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 class CarJPADataAccessServicesTest {
     private CarJPADataAccessServices underTest;
@@ -31,9 +40,20 @@ class CarJPADataAccessServicesTest {
 
     @Test
     void getCars() {
-        underTest.getCars();
+        Page<Car> page = mock(Page.class);
+        List<Car> cars = Arrays.asList(new Car());
 
-        verify(carRepository).findAll();
+        when(page.getContent()).thenReturn(cars);
+        when(carRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        List<Car> expected = underTest.getCars();
+
+        // Then
+        assertThat(expected).isEqualTo(cars);
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        verify(carRepository).findAll(captor.capture());
+        assertThat(captor.getValue()).isEqualTo(Pageable.ofSize(100));
     }
 
     @Test

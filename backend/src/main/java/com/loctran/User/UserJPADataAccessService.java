@@ -1,6 +1,8 @@
 package com.loctran.User;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +19,8 @@ public class UserJPADataAccessService implements UserDAO {
 
     @Override
     public List<User> getUsers() {
-        return userRepository.findAll();
+        Page<User> page = userRepository.findAll(Pageable.ofSize(1000));
+        return page.getContent();
     }
 
     @Override

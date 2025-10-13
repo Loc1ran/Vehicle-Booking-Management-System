@@ -9,12 +9,6 @@
         <module name="loctran-api" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="CLI-Project" target="22" />
-      <module name="CLI-Project1" target="22" />
-      <module name="frontend" target="22" />
-      <module name="untitled" target="22" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

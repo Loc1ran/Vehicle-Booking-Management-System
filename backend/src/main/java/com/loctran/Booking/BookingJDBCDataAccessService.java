@@ -45,6 +45,7 @@ public class BookingJDBCDataAccessService implements BookingDAO{
         FROM booking b
         JOIN car c ON b.car_id = c.reg_number
         JOIN user_info u ON b.user_id = u.id
+        LIMIT 100;
         """;
 
         return jdbcTemplate.query(sql, bookingRowMapper);

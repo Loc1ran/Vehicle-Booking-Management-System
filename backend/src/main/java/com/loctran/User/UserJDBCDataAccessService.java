@@ -21,7 +21,8 @@ public class UserJDBCDataAccessService implements UserDAO {
     public List<User> getUsers() {
         var sql = """
                 SELECT *
-                FROM user_info;
+                FROM user_info
+                LIMIT 1000;
                 """;
         return jdbcTemplate.query(sql, userRowMapper);
     }
