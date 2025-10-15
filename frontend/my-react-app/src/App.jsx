@@ -34,7 +34,7 @@ const App = () => {
     if(loading){
         return (
             <SidebarWithHeader><Spinner color="teal.500" size="lg" /></SidebarWithHeader>
-            )
+        )
     }
 
     if(err){
@@ -51,7 +51,7 @@ const App = () => {
     if(getCars.length <= 0){
         return (
             <SidebarWithHeader>
-                    <CreateCarDrawerForm fetchCars={fetchCars}/>
+                <CreateCarDrawerForm fetchCars={fetchCars}/>
                 <Text mt={4}>
                     No Car Available For Rent
                 </Text>
@@ -65,7 +65,7 @@ const App = () => {
                 {getCars.map((car,index) => (
                     <WrapItem key={index}>
                         <ProductAddToCart fetchCars={fetchCars}
-                            {...car}
+                                          {...car}
                         />
                     </WrapItem>
                 ))}
