@@ -1,4 +1,4 @@
-package com.loctran.Exception;
+package com.loctran.exception;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

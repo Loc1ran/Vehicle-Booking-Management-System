@@ -2,9 +2,8 @@ package com.loctran.journey;
 
 
 import com.github.javafaker.Faker;
-import com.loctran.User.User;
-import com.loctran.User.UserDTO;
-import com.loctran.User.UserRegistrationRequest;
+import com.loctran.user.UserDTO;
+import com.loctran.user.UserRegistrationRequest;
 import com.loctran.auth.AuthenticationRequest;
 import com.loctran.auth.AuthenticationResponse;
 import com.loctran.jwt.JWTUtil;
@@ -20,7 +19,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,18 +1,14 @@
 package com.loctran;
 
-import com.loctran.Booking.Booking;
-import com.loctran.Booking.BookingRepository;
-import com.loctran.Car.Brand;
-import com.loctran.Car.Car;
-import com.loctran.Car.CarRepository;
-import com.loctran.User.User;
-import com.loctran.User.UserRepository;
+import com.loctran.booking.BookingRepository;
+import com.loctran.car.CarRepository;
+import com.loctran.s3.S3Buckets;
+import com.loctran.user.UserRepository;
+import com.loctran.s3.S3Services;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.math.BigDecimal;
 
 @SpringBootApplication
 public class CliProjectApplication {
@@ -23,8 +19,17 @@ public class CliProjectApplication {
 
 	// For test CRUD operation without POST request
 //	@Bean
-//	CommandLineRunner runner(BookingRepository bookingRepository, CarRepository carRepository, UserRepository userRepository, BookingRepository bookingRespository) {
+//	CommandLineRunner runner(BookingRepository bookingRepository, CarRepository carRepository, UserRepository userRepository, BookingRepository bookingRespository, S3Services s3Services, S3Buckets s3Buckets) {
 //		return args -> {
+//			s3Services.putObject(
+//					s3Buckets.getCar(),
+//					"test",
+//						"HelloWorld".getBytes()
+//			);
+//
+//			byte[] tests = s3Services.getObject("fs-loctran-car-test", "test");
+//
+//			System.out.println(new String(tests));
 //			Car car = new Car("1122", new BigDecimal("123123"), Brand.TESLA, true);
 //			carRepository.save(car);
 //			User user = new User("Loc");
@@ -44,5 +49,4 @@ public class CliProjectApplication {
 //			carRepository.save(car4);
 //		};
 //	}
-
 }

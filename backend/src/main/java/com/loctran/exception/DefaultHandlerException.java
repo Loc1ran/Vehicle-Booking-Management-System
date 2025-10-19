@@ -1,4 +1,4 @@
-package com.loctran.Exception;
+package com.loctran.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;

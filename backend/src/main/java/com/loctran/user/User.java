@@ -1,4 +1,4 @@
-package com.loctran.User;
+package com.loctran.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

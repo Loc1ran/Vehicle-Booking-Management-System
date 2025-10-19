@@ -1,4 +1,4 @@
-package com.loctran.User;
+package com.loctran.user;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;

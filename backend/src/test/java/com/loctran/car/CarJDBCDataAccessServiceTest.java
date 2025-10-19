@@ -1,6 +1,7 @@
-package com.loctran.Car;
+package com.loctran.car;
 
 import com.loctran.AbstractDaoUnitTest;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -108,5 +109,24 @@ class CarJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
             assertThat(c.isElectric()).isFalse();
         });
 
+    }
+
+    @Test
+    void updateImageId() {
+        String regNumber = "3123";
+        Car car = new Car(regNumber, new BigDecimal("100"), Brand.TESLA, true);
+
+        underTest.saveCar(car);
+
+        underTest.updateCarImage("2222", regNumber);
+
+        Optional<Car> carOptional = underTest.getCarById(regNumber);
+
+        AssertionsForClassTypes.assertThat(carOptional).isPresent()
+                .hasValueSatisfying(
+                        c -> {
+                            AssertionsForClassTypes.assertThat(c.getCarImageId()).isEqualTo("2222");
+                        }
+                );
     }
 }

@@ -1,4 +1,4 @@
-package com.loctran.User;
+package com.loctran.user;
 
 import java.util.List;
 import java.util.UUID;

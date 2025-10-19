@@ -1,7 +1,7 @@
-package com.loctran.User;
+package com.loctran.user;
 
-import com.loctran.Exception.RequestValidationException;
-import com.loctran.Exception.ResourceNotFound;
+import com.loctran.exception.RequestValidationException;
+import com.loctran.exception.ResourceNotFound;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

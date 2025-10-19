@@ -1,22 +1,18 @@
 
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.Car;
-import com.loctran.Car.CarServices;
-import com.loctran.Car.UpdateCarRequest;
-import com.loctran.Exception.DuplicateResourceException;
-import com.loctran.Exception.RequestValidationException;
-import com.loctran.Exception.ResourceNotFound;
-import com.loctran.User.UpdateUserRequest;
-import com.loctran.User.User;
-import com.loctran.User.UserDAO;
-import com.loctran.User.UserService;
+import com.loctran.car.Car;
+import com.loctran.car.CarServices;
+import com.loctran.car.UpdateCarRequest;
+import com.loctran.exception.RequestValidationException;
+import com.loctran.exception.ResourceNotFound;
+import com.loctran.user.UpdateUserRequest;
+import com.loctran.user.User;
+import com.loctran.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.View;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

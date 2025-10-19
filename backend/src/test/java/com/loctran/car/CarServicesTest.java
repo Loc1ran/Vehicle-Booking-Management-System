@@ -1,15 +1,19 @@
-package com.loctran.Car;
+package com.loctran.car;
 
-import com.loctran.Exception.RequestValidationException;
-import com.loctran.Exception.ResourceNotFound;
-import com.loctran.User.User;
+import com.loctran.exception.RequestValidationException;
+import com.loctran.exception.ResourceNotFound;
+import com.loctran.s3.S3Buckets;
+import com.loctran.s3.S3Services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -17,20 +21,23 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CarServicesTest {
     private CarServices underTest;
     @Mock
     private CarDAO carDAO;
+    @Mock
+    private S3Services s3Services;
+    @Mock
+    private S3Buckets s3Buckets;
 
 
     @BeforeEach
     void setUp() {
-        underTest = new CarServices(carDAO);
+        underTest = new CarServices(carDAO, s3Services, s3Buckets);
     }
 
     @Test
@@ -267,5 +274,112 @@ class CarServicesTest {
        assertThatThrownBy(() -> underTest.updateCar(regNumber, updateCarRequest))
                .isInstanceOf(ResourceNotFound.class)
                .hasMessage("car not found");
+    }
+
+    @Test
+    void uploadCarImages() {
+        String regNumber = "1234";
+        Car car = new Car(regNumber, new BigDecimal("100"), Brand.MERCEDES, false);
+        when(carDAO.getCarById(regNumber)).thenReturn(Optional.of(car));
+
+        byte[] bytes = "test".getBytes();
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                bytes
+        );
+
+        String bucket = "car";
+        when(s3Buckets.getCar()).thenReturn(bucket);
+
+        underTest.uploadCarImages(regNumber, multipartFile);
+
+        ArgumentCaptor<String> carImageId = ArgumentCaptor.forClass(String.class);
+
+        verify(carDAO).updateCarImage(carImageId.capture(), eq(regNumber));
+        verify(s3Services).putObject(
+                bucket,
+                "car-images/%s/%s".formatted(regNumber, carImageId.getValue()),
+                bytes);
+
+    }
+
+    @Test
+    void willThrowAnExceptionWhenCarIsEmpty(){
+        String regNumber = "123";
+        when(carDAO.getCarById(regNumber)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> underTest.uploadCarImages(regNumber, mock(MultipartFile.class)))
+                .isInstanceOf(ResourceNotFound.class)
+                .hasMessage(String.format("car with regNumber %s not found", regNumber));
+
+        verifyNoInteractions(s3Buckets);
+        verifyNoInteractions(s3Services);
+        verifyNoMoreInteractions(carDAO);
+    }
+
+    @Test
+    void willThrowAnExceptionWhenUploadCarImages() throws IOException {
+        String regNumber = "1234";
+        Car car = new Car(regNumber, new BigDecimal("100"), Brand.MERCEDES, false);
+        when(carDAO.getCarById(regNumber)).thenReturn(Optional.of(car));
+
+        MultipartFile multipartFile = mock(MultipartFile.class);
+
+        when(multipartFile.getBytes()).thenThrow(IOException.class);
+
+        String bucket = "car";
+        when(s3Buckets.getCar()).thenReturn(bucket);
+
+        assertThatThrownBy(() -> underTest.uploadCarImages(regNumber, multipartFile))
+                .isInstanceOf(RuntimeException.class)
+                        .hasRootCauseInstanceOf(IOException.class);
+
+        verify(carDAO, never()).updateCarImage(any(), any());
+
+    }
+
+    @Test
+    void getCarImages(){
+        String regNumber = "1234";
+        String carImageId = UUID.randomUUID().toString();
+        Car car = new Car(regNumber, new BigDecimal("100"), Brand.MERCEDES, false, carImageId);
+
+        when(carDAO.getCarById(regNumber)).thenReturn(Optional.of(car));
+        String bucket = "car";
+        when(s3Buckets.getCar()).thenReturn(bucket);
+
+        when(s3Services.getObject(s3Buckets.getCar(), "car-images/%s/%s".formatted(regNumber, carImageId))).thenReturn(carImageId.getBytes());
+
+        byte[] expected = underTest.getCarImages(regNumber);
+
+        assertThat(carImageId.getBytes()).isEqualTo(expected);
+    }
+
+    @Test
+    void willThrowAnExceptionWhenGetCarImagesIdNotExisted(){
+        String regNumber = "1234";
+        Car car = new Car(regNumber, new BigDecimal("100"), Brand.MERCEDES, false);
+
+        when(carDAO.getCarById(regNumber)).thenReturn(Optional.of(car));
+
+        assertThatThrownBy(() -> underTest.getCarImages(regNumber))
+                .isInstanceOf(ResourceNotFound.class)
+                .hasMessage("car image not found");
+
+        verifyNoInteractions(s3Buckets);
+        verifyNoInteractions(s3Services);
+    }
+
+    @Test
+    void willThrownAnExceptionWhenCarNotExistedForGetCarImages(){
+        String regNumber = "1234";
+
+        when(carDAO.getCarById(regNumber)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> underTest.getCarImages(regNumber))
+                .isInstanceOf(ResourceNotFound.class)
+                .hasMessage("car not found");
+
+        verifyNoInteractions(s3Buckets);
+        verifyNoInteractions(s3Services);
     }
 }

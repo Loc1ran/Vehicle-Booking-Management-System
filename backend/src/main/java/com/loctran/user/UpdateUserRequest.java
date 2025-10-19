@@ -1,4 +1,4 @@
-package com.loctran.User;
+package com.loctran.user;
 
 public record UpdateUserRequest( String name ) {
     public boolean hasChanges(User user) {

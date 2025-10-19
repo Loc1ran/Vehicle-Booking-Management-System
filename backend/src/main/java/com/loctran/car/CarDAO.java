@@ -1,4 +1,4 @@
-package com.loctran.Car;
+package com.loctran.car;
 
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +12,5 @@ public interface CarDAO {
     void saveCar(Car car);
     void deleteCar(String regNumber);
     void updateCar(Car car);
+    void updateCarImage(String imageId, String regNumber);
 }

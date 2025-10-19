@@ -1,9 +1,8 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.Car;
-import com.loctran.User.User;
+import com.loctran.car.Car;
+import com.loctran.user.User;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Objects;
 import java.util.UUID;

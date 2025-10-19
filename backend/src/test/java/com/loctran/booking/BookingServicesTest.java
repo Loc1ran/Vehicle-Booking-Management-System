@@ -1,9 +1,9 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.*;
-import com.loctran.Exception.RequestValidationException;
-import com.loctran.Exception.ResourceNotFound;
-import com.loctran.User.*;
+import com.loctran.car.*;
+import com.loctran.exception.RequestValidationException;
+import com.loctran.exception.ResourceNotFound;
+import com.loctran.user.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

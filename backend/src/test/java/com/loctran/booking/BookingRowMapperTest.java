@@ -1,8 +1,8 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.Brand;
-import com.loctran.Car.Car;
-import com.loctran.User.User;
+import com.loctran.car.Brand;
+import com.loctran.car.Car;
+import com.loctran.user.User;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

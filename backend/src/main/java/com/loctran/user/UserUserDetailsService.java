@@ -1,12 +1,10 @@
-package com.loctran.User;
+package com.loctran.user;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class UserUserDetailsService implements UserDetailsService {

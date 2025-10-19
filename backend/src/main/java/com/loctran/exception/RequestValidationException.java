@@ -1,4 +1,4 @@
-package com.loctran.Exception;
+package com.loctran.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

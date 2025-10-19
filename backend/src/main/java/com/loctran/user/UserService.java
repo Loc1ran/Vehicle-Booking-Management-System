@@ -1,8 +1,8 @@
-package com.loctran.User;
+package com.loctran.user;
 
-import com.loctran.Exception.DuplicateResourceException;
-import com.loctran.Exception.RequestValidationException;
-import com.loctran.Exception.ResourceNotFound;
+import com.loctran.exception.DuplicateResourceException;
+import com.loctran.exception.RequestValidationException;
+import com.loctran.exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

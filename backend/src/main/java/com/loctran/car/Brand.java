@@ -1,4 +1,4 @@
-package com.loctran.Car;
+package com.loctran.car;
 
 public enum Brand {
     TESLA,

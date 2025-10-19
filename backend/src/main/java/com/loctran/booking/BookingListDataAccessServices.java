@@ -1,7 +1,6 @@
-package com.loctran.Booking;
-import com.loctran.Car.Car;
-import com.loctran.Exception.RequestValidationException;
-import com.loctran.Exception.ResourceNotFound;
+package com.loctran.booking;
+import com.loctran.car.Car;
+import com.loctran.exception.ResourceNotFound;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

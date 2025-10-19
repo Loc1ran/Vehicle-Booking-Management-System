@@ -1,10 +1,10 @@
 package com.loctran.journey;
 
 import com.github.javafaker.Faker;
-import com.loctran.User.UpdateUserRequest;
-import com.loctran.User.User;
-import com.loctran.User.UserDTO;
-import com.loctran.User.UserRegistrationRequest;
+import com.loctran.user.UpdateUserRequest;
+import com.loctran.user.User;
+import com.loctran.user.UserDTO;
+import com.loctran.user.UserRegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,6 +1,5 @@
-package com.loctran.User;
+package com.loctran.user;
 
-import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

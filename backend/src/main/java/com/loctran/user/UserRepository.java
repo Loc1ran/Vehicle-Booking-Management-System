@@ -1,4 +1,4 @@
-package com.loctran.User;
+package com.loctran.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

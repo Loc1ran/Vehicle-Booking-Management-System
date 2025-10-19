@@ -1,10 +1,8 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.Car;
-import com.loctran.Car.CarRowMapper;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import com.loctran.car.Car;
+import com.loctran.car.CarRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Repository("bookingJDBC")
 public class BookingJDBCDataAccessService implements BookingDAO{
@@ -37,6 +34,7 @@ public class BookingJDBCDataAccessService implements BookingDAO{
             c.rental_price_per_day,
             c.brand,
             c.is_electric,
+            c.car_images,
         
             u.id AS user_id,
             u.name,
@@ -81,7 +79,7 @@ public class BookingJDBCDataAccessService implements BookingDAO{
         NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
 
         String sql = """
-                    SELECT reg_number, rental_price_per_day, brand, is_electric
+                    SELECT reg_number, rental_price_per_day, brand, is_electric, car_images
                     FROM car c
                     WHERE c.reg_number IN (:cars)
                     AND NOT EXISTS (
@@ -160,6 +158,7 @@ public class BookingJDBCDataAccessService implements BookingDAO{
             c.rental_price_per_day,
             c.brand,
             c.is_electric,
+            c.car_images,
         
             u.id AS user_id,
             u.name,

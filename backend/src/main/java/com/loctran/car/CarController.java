@@ -1,7 +1,8 @@
-package com.loctran.Car;
+package com.loctran.car;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,5 +38,21 @@ public class CarController {
     @PutMapping("{regNumber}")
     public void updateCar(@PathVariable("regNumber") String regNumber, @RequestBody UpdateCarRequest updateCarRequest) {
         carServices.updateCar(regNumber, updateCarRequest);
+    }
+
+    @PostMapping(
+            value = "{regNumber}/car-images",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public void uploadCarImages(
+            @PathVariable("regNumber") String regNumber,
+            @RequestParam("file") MultipartFile file){
+        carServices.uploadCarImages(regNumber, file);
+    }
+
+    @GetMapping("{regNumber}/car-images")
+    public byte[] getCarImages(
+            @PathVariable("regNumber") String regNumber){
+        return carServices.getCarImages(regNumber);
     }
 }

@@ -1,12 +1,11 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.Car;
+import com.loctran.car.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface BookingRepository extends JpaRepository<Booking, UUID> {

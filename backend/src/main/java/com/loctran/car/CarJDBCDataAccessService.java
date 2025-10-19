@@ -1,4 +1,4 @@
-package com.loctran.Car;
+package com.loctran.car;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -81,5 +81,15 @@ public class CarJDBCDataAccessService implements CarDAO{
                     """;
             jdbcTemplate.update(sql, car.isElectric(), car.getRegNumber());
 
+    }
+
+    @Override
+        public void updateCarImage(String imageId, String regNumber) {
+            var sql = """
+                UPDATE car
+                SET car_images = ?
+                WHERE reg_number = ?;
+                """;
+            jdbcTemplate.update(sql, imageId, regNumber);
     }
 }

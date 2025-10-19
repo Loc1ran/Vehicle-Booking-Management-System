@@ -1,21 +1,27 @@
 package com.loctran.journey;
 
 import com.github.javafaker.Faker;
-import com.loctran.Booking.BookingRequest;
-import com.loctran.Car.Brand;
-import com.loctran.Car.Car;
-import com.loctran.Car.UpdateCarRequest;
-import com.loctran.User.UserRegistrationRequest;
+import com.loctran.car.Brand;
+import com.loctran.car.Car;
+import com.loctran.car.UpdateCarRequest;
+import com.loctran.user.UserRegistrationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserter;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.testcontainers.shaded.com.google.common.io.Files;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -104,6 +110,7 @@ public class CarIntegrationTest {
                 .returnResult().getResponseBody();
 
         assertThat(cars).isNotNull();
+        assertThat(cars).contains(request);
 
         //Get Cars by id from api
 
@@ -163,5 +170,66 @@ public class CarIntegrationTest {
 
         assertThat(actual).isEqualTo(updateCar);
     }
+
+
+    @Test
+    void canUploadAndDownloadCarImages() throws IOException {
+        String regNumber = UUID.randomUUID().toString().substring(0, 8);
+        Car request = new Car(regNumber, new BigDecimal("322.10"), Brand.TESLA, true);
+
+        webTestClient.post().uri("/api/v1/cars")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .contentType(MediaType.APPLICATION_JSON).body(Mono.just(request), Car.class)
+                .exchange().expectStatus().isOk();
+
+        //Get AllCars
+
+        List<Car> cars = webTestClient.get().uri("/api/v1/cars")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .exchange().expectStatus().isOk()
+                .expectBodyList(new ParameterizedTypeReference<Car>() {})
+                .returnResult().getResponseBody();
+
+        assertThat(cars).isNotNull();
+        assertThat(cars).contains(request);
+
+        Resource image = new ClassPathResource(
+                "%s.png".formatted(request.getBrand().toString().toLowerCase())
+        );
+
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("file", image);
+
+        webTestClient.post().uri("/api/v1/cars/{regNumber}/car-images", regNumber)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .exchange().expectStatus().isOk();
+
+        String imageId = Objects.requireNonNull(webTestClient.get().uri("/api/v1/cars/{regNumber}", regNumber)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .exchange().expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<Car>() {
+                })
+                .returnResult().getResponseBody()).getCarImageId();
+
+        assertThat(imageId).isNotNull();
+
+        // download car image
+        byte[] carImageDownloaded = webTestClient.get().uri("/api/v1/cars/{regNumber}/car-images", regNumber)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange().expectStatus().isOk()
+                .expectBody(byte[].class)
+                .returnResult().getResponseBody();
+
+        byte[] actual = Files.toByteArray(image.getFile());
+
+        assertThat(actual).isEqualTo(carImageDownloaded);
+    }
+
+
+
 
 }

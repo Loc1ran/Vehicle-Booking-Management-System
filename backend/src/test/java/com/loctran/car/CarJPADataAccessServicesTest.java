@@ -1,21 +1,23 @@
-package com.loctran.Car;
+package com.loctran.car;
 
-import com.loctran.Booking.Booking;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
@@ -89,6 +91,16 @@ class CarJPADataAccessServicesTest {
 
         underTest.updateCar(updateCar);
 
+
         verify(carRepository).save(updateCar);
+    }
+
+    @Test
+    void updateCarImage(){
+        String regNumber = "3123";
+
+        underTest.updateCarImage("2222", regNumber);
+
+        verify(carRepository).updateImageId("2222", regNumber);
     }
 }

@@ -1,4 +1,4 @@
-package com.loctran.User;
+package com.loctran.user;
 
 import com.github.javafaker.Faker;
 import org.springframework.stereotype.Repository;

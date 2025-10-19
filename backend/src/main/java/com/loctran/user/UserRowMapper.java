@@ -1,4 +1,4 @@
-package com.loctran.User;
+package com.loctran.user;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

@@ -1,23 +1,43 @@
-package com.loctran.Car;
+package com.loctran.car;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
+@Table(
+        name = "car",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "car_image_unique",
+                        columnNames = "carImageId"
+                )
+        }
+)
 public class Car {
     @Id
     private String regNumber;
+
     private BigDecimal rentalPricePerDay;
+
     @Enumerated(EnumType.STRING)
     private Brand brand;
+
     @JsonProperty("isElectric")
     private boolean isElectric;
+
+    @Column(
+            name = "car_images",
+            nullable = true
+    )
+    private String carImageId;
+
+    public Car(String regNumber, BigDecimal rentalPricePerDay, Brand brand, boolean isElectric, String carImageId) {
+        this(regNumber, rentalPricePerDay, brand, isElectric);
+        this.carImageId = carImageId;
+    }
 
     public Car(String regNumber, BigDecimal rentalPricePerDay, Brand brand, boolean isElectric) {
         this.regNumber = regNumber;
@@ -62,25 +82,35 @@ public class Car {
         this.isElectric = electric;
     }
 
+    public String getCarImageId() {
+        return carImageId;
+    }
+
+    public void setCarImageId(String carImageId) {
+        this.carImageId = carImageId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Car car = (Car) o;
-        return Objects.equals(regNumber, car.regNumber) && isElectric == car.isElectric && Objects.equals(rentalPricePerDay, car.rentalPricePerDay) && Objects.equals(brand, car.brand);
+        return isElectric == car.isElectric && Objects.equals(regNumber, car.regNumber) && Objects.equals(rentalPricePerDay, car.rentalPricePerDay) && brand == car.brand && Objects.equals(carImageId, car.carImageId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(regNumber, rentalPricePerDay, brand, isElectric);
+        return Objects.hash(regNumber, rentalPricePerDay, brand, isElectric, carImageId);
     }
 
     @Override
     public String toString() {
-        return  "{regNumber=" + regNumber +
+        return "Car{" +
+                "regNumber='" + regNumber + '\'' +
                 ", rentalPricePerDay=" + rentalPricePerDay +
-                ", brand='" + brand + '\'' +
+                ", brand=" + brand +
                 ", isElectric=" + isElectric +
+                ", carImageId='" + carImageId + '\'' +
                 '}';
     }
 }

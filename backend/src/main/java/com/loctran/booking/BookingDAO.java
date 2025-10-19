@@ -1,6 +1,6 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.Car;
+import com.loctran.car.Car;
 
 import java.util.List;
 import java.util.Optional;

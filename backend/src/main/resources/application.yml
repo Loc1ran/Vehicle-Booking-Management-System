@@ -3,6 +3,13 @@ server:
   error:
     include-message: always
 
+aws:
+  region: us-east-1
+  s3:
+    buckets:
+      car: "fs-loctran-car-test"
+    mock: true
+
 cors:
   allowed-origins: "*"
   allowed-methods: "*"
@@ -14,7 +21,6 @@ management:
     web:
       exposure:
         include: "health,info"
-
 spring:
   flyway:
     enabled: true
@@ -37,6 +43,13 @@ spring:
     open-in-view: false
   main:
     web-application-type: servlet
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  http:
+    codecs:
+      max-in-memory-size: 10MB
 logging:
   level:
     org.flywaydb: DEBUG

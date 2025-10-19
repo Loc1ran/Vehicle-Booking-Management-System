@@ -1,20 +1,30 @@
-package com.loctran.Car;
+package com.loctran.car;
 
-import com.loctran.Exception.RequestValidationException;
-import com.loctran.Exception.ResourceNotFound;
+import com.loctran.exception.RequestValidationException;
+import com.loctran.exception.ResourceNotFound;
+import com.loctran.s3.S3Buckets;
+import com.loctran.s3.S3Services;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
 @Service
 public class CarServices {
     private final CarDAO carDAO;
+    private final S3Services s3Services;
+    private final S3Buckets s3Buckets;
 
-    public CarServices(@Qualifier("carJDBC") CarDAO carDAO) {
+    public CarServices(@Qualifier("carJDBC") CarDAO carDAO, S3Services s3Services, S3Buckets s3Buckets) {
         this.carDAO = carDAO;
+        this.s3Services = s3Services;
+        this.s3Buckets = s3Buckets;
     }
 
     public void saveCar(Car car){
@@ -75,6 +85,38 @@ public class CarServices {
         }
 
         carDAO.updateCar(car);
+    }
+
+    public void uploadCarImages(String regNumber, MultipartFile file) {
+        if(carDAO.getCarById(regNumber).isEmpty()){
+            throw new ResourceNotFound(String.format("car with regNumber %s not found", regNumber));
+        }
+
+        String carImageId = UUID.randomUUID().toString();
+
+        try {
+            s3Services.putObject(
+                    s3Buckets.getCar(),
+                    "car-images/%s/%s".formatted(regNumber, carImageId),
+                    file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        carDAO.updateCarImage(carImageId, regNumber);
+
+    }
+
+    public byte[] getCarImages(String regNumber) {
+        Car car = carDAO.getCarById(regNumber)
+                .orElseThrow(()-> new ResourceNotFound("car not found"));
+
+        String carImageId = car.getCarImageId();
+        if(StringUtils.isBlank(carImageId)){
+            throw new ResourceNotFound("car image not found");
+        }
+
+        return s3Services.getObject(s3Buckets.getCar(), "car-images/%s/%s".formatted(regNumber, carImageId));
     }
 }
 

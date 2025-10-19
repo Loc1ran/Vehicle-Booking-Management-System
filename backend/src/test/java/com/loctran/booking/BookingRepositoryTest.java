@@ -1,11 +1,11 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
 import com.github.javafaker.Faker;
-import com.loctran.Car.Brand;
-import com.loctran.Car.Car;
-import com.loctran.Car.CarRepository;
-import com.loctran.User.User;
-import com.loctran.User.UserRepository;
+import com.loctran.car.Brand;
+import com.loctran.car.Car;
+import com.loctran.car.CarRepository;
+import com.loctran.user.User;
+import com.loctran.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

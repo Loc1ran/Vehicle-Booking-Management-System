@@ -1,7 +1,7 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.UpdateCarRequest;
-import com.loctran.User.UpdateUserRequest;
+import com.loctran.car.UpdateCarRequest;
+import com.loctran.user.UpdateUserRequest;
 
 public record BookingUpdateWrapper(
         UpdateBookingRequest booking,

@@ -1,6 +1,5 @@
-package com.loctran.Car;
+package com.loctran.car;
 
-import com.loctran.Booking.BookingRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
@@ -16,6 +15,7 @@ public class CarRowMapper implements RowMapper<Car> {
         BigDecimal price = rs.getBigDecimal("rental_price_per_day");
         Brand brand = Brand.valueOf(rs.getString("brand"));
         boolean isElectric = rs.getBoolean("is_electric");
-        return new Car(regNumber, price, brand, isElectric);
+        String carImages = rs.getString("car_images");
+        return new Car(regNumber, price, brand, isElectric, carImages);
     }
 }

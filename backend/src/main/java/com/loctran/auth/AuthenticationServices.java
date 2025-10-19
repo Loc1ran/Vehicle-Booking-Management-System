@@ -1,9 +1,8 @@
 package com.loctran.auth;
 
-import com.loctran.Booking.BookingDTO;
-import com.loctran.User.User;
-import com.loctran.User.UserDTO;
-import com.loctran.User.UserDTOMapper;
+import com.loctran.user.User;
+import com.loctran.user.UserDTO;
+import com.loctran.user.UserDTOMapper;
 import com.loctran.jwt.JWTUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

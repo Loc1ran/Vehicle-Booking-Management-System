@@ -1,6 +1,6 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.User.UserDTOMapper;
+import com.loctran.user.UserDTOMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

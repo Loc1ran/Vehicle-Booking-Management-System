@@ -1,4 +1,4 @@
-package com.loctran.Car;
+package com.loctran.car;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,5 +40,8 @@ public class CarJPADataAccessServices implements CarDAO{
         carRepository.save(car);
     }
 
-
+    @Override
+    public void updateCarImage(String image, String regNumber) {
+        carRepository.updateImageId(image, regNumber);
+    }
 }

@@ -1,23 +1,20 @@
 package com.loctran.journey;
 
 import com.github.javafaker.Faker;
-import com.loctran.Booking.Booking;
-import com.loctran.Booking.BookingDTO;
-import com.loctran.Booking.BookingRequest;
-import com.loctran.Booking.BookingUpdateWrapper;
-import com.loctran.Car.Brand;
-import com.loctran.Car.Car;
-import com.loctran.Car.CarServices;
-import com.loctran.Car.UpdateCarRequest;
-import com.loctran.User.*;
-import org.junit.jupiter.api.BeforeEach;
+import com.loctran.booking.BookingDTO;
+import com.loctran.booking.BookingRequest;
+import com.loctran.booking.BookingUpdateWrapper;
+import com.loctran.car.Brand;
+import com.loctran.car.Car;
+import com.loctran.car.CarServices;
+import com.loctran.car.UpdateCarRequest;
+import com.loctran.user.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 

@@ -1,13 +1,13 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
 import com.loctran.AbstractDaoUnitTest;
-import com.loctran.Car.Brand;
-import com.loctran.Car.Car;
-import com.loctran.Car.CarJDBCDataAccessService;
-import com.loctran.Car.CarRowMapper;
-import com.loctran.User.User;
-import com.loctran.User.UserJDBCDataAccessService;
-import com.loctran.User.UserRowMapper;
+import com.loctran.car.Brand;
+import com.loctran.car.Car;
+import com.loctran.car.CarJDBCDataAccessService;
+import com.loctran.car.CarRowMapper;
+import com.loctran.user.User;
+import com.loctran.user.UserJDBCDataAccessService;
+import com.loctran.user.UserRowMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

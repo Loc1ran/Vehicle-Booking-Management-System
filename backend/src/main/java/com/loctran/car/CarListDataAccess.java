@@ -1,4 +1,4 @@
-package com.loctran.Car;
+package com.loctran.car;
 
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +27,11 @@ public class CarListDataAccess implements CarDAO{
 
     @Override
     public void updateCar(Car car) {
+
+    }
+
+    @Override
+    public void updateCarImage(String imageId, String regNumber) {
 
     }
 

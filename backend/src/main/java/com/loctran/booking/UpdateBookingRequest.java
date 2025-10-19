@@ -1,7 +1,7 @@
-package com.loctran.Booking;
+package com.loctran.booking;
 
-import com.loctran.Car.Car;
-import com.loctran.User.User;
+import com.loctran.car.Car;
+import com.loctran.user.User;
 
 import java.util.UUID;
 
