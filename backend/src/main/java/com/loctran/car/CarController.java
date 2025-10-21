@@ -50,7 +50,10 @@ public class CarController {
         carServices.uploadCarImages(regNumber, file);
     }
 
-    @GetMapping("{regNumber}/car-images")
+    @GetMapping(
+            value = "{regNumber}/car-images",
+            produces = MediaType.IMAGE_JPEG_VALUE
+    )
     public byte[] getCarImages(
             @PathVariable("regNumber") String regNumber){
         return carServices.getCarImages(regNumber);

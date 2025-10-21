@@ -10,33 +10,17 @@ import {
     Icon,
     chakra,
     Tooltip,
-    Stack,
     useDisclosure,
-    Button,
-    AlertDialog,
-    AlertDialogOverlay,
-    AlertDialogContent,
-    AlertDialogHeader,
-    AlertDialogBody,
-    AlertDialogFooter,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
-    DrawerHeader,
-    DrawerBody,
-    DrawerFooter, Drawer,
 } from '@chakra-ui/react'
 import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs'
 import { FiShoppingCart } from 'react-icons/fi'
 import React from "react";
 import DeleteCarButton from "./DeleteCarButton.jsx";
 import UpdateCarDrawerForm from "./UpdateCarDrawerForm.jsx";
+import {carImageUrl} from "../../services/client.js";
 
 const data = {
     isNew: true,
-    imageURL:
-        'https://img2.carmax.com/assets/27349912/hero.jpg?width=800&height=450',
-    name: 'Wayfarer Classic',
     price: 4.5,
     rating: 4.2,
     numReviews: 34,
@@ -77,6 +61,8 @@ function Rating({ rating, numReviews }) {
 function ProductAddToCart({regNumber, rentalPricePerDay, brand, electric, fetchCars}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
+    const imageSrc = carImageUrl(regNumber);
+
     return (
         <Flex p={50} w="full" alignItems="center" justifyContent="center">
             <Box
@@ -90,7 +76,12 @@ function ProductAddToCart({regNumber, rentalPricePerDay, brand, electric, fetchC
                     <Circle size="10px" position="absolute" top={2} right={2} bg="green.200" />
                 )}
 
-                <Image src={data.imageURL} alt={`Picture of ${brand}`} roundedTop="lg" />
+                <Image src={carImageUrl(regNumber)?.trim() || "https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_1280.jpg"}
+                       alt={`Picture of ${brand}`}
+                       roundedTop="lg"
+                       onError={(e) => {
+                           e.target.src = "https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_1280.jpg"
+                       }}/>
 
                 <UpdateCarDrawerForm regNumber={regNumber}
                                rentalPricePerDay={rentalPricePerDay}

@@ -1,11 +1,12 @@
-import React from 'react';
-import { Formik, Form, useField } from 'formik';
+import React, {useCallback} from 'react';
+import {Formik, Form, useField} from 'formik';
 import * as Yup from 'yup';
-import {Alert, AlertIcon, Box, Button, FormLabel, Input, Select, Stack} from "@chakra-ui/react";
-import {updateCar} from "../../services/client.js";
+import {Alert, AlertIcon, Box, Button, FormLabel, Input, Select, Stack, VStack, Image} from "@chakra-ui/react";
+import {carImageUrl, updateCar, uploadCarImage} from "../../services/client.js";
 import {errorNotification, successNotification} from "../../services/notification.js";
+import {useDropzone} from "react-dropzone";
 
-const MyTextInput = ({ label, ...props }) => {
+const MyTextInput = ({label, ...props}) => {
     // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
     // which we can spread on <input>. We can use field meta to show an error
     // message if the field is invalid and it has been touched (i.e. visited)
@@ -23,7 +24,7 @@ const MyTextInput = ({ label, ...props }) => {
     );
 };
 
-const MySelect = ({ label, ...props }) => {
+const MySelect = ({label, ...props}) => {
     const [field, meta] = useField(props);
     return (
         <Box>
@@ -38,10 +39,64 @@ const MySelect = ({ label, ...props }) => {
     );
 };
 
+const MyDropzone = ( {fetchCars, regNumber} ) => {
+    const onDrop = useCallback(acceptedFiles => {
+        const formData = new FormData();
+        formData.append("file", acceptedFiles[0]);
+        uploadCarImage(
+            regNumber, formData
+        ).then((res) => {
+            successNotification("Success", "Upload car image successfully");
+            fetchCars();
+        }).catch((err) => {
+            errorNotification("Error", "Failed to upload car image")
+        })
+    }, [])
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+
+    return (
+        <Box {...getRootProps()}
+             w={'100%'}
+             textAlign={'center'}
+             border={'dashed'}
+             borderColor={'gray.200'}
+             borderRadius={'3xl'}
+             p={6}
+             rounded={'md'}
+        >
+            <input {...getInputProps()} />
+            {
+                isDragActive ?
+                    <p>Drop the files here ...</p> :
+                    <p>Drag 'n' drop some files here, or click to select files</p>
+            }
+        </Box>
+    )
+}
+
 // And now we can use these
-const UpdateCarForm = ({ regNumber, rentalPricePerDay, brand, electric, fetchCars }) => {
+const UpdateCarForm = ({regNumber, rentalPricePerDay, brand, electric, fetchCars}) => {
     return (
         <>
+            <VStack spacing={'5'} mb={'5'}>
+                <Image
+                    boxSize="150px"
+                    borderRadius="full"
+                    objectFit="cover"
+                    border="2px solid"
+                    borderColor="gray.300"
+                    boxShadow="md"
+                    src={carImageUrl(regNumber)?.trim() || "https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_1280.jpg"}
+                    alt={`Picture of ${brand}`}
+                    onError={(e) => {
+                        e.target.src = "https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_1280.jpg";
+                    }}
+                />
+                <MyDropzone
+                    regNumber={regNumber}
+                    fetchCars={fetchCars}
+                />
+            </VStack>
             <Formik
                 initialValues={{
                     regNumber: regNumber,
@@ -68,7 +123,7 @@ const UpdateCarForm = ({ regNumber, rentalPricePerDay, brand, electric, fetchCar
                         )
                         .required('Required'),
                 })}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(values, {setSubmitting}) => {
                     setSubmitting(true);
 
                     const car = {
@@ -122,7 +177,7 @@ const UpdateCarForm = ({ regNumber, rentalPricePerDay, brand, electric, fetchCar
                                 <option value="true">True</option>
                                 <option value="false">False</option>
                             </MySelect>
-                            <Button disable={!isValid || isSubmitting} type="submit">Submit</Button>
+                            <Button isDisabled={!isValid || isSubmitting} type="submit">Submit</Button>
                         </Stack>
                     </Form>
                 )}

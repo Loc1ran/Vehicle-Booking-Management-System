@@ -219,7 +219,7 @@ public class CarIntegrationTest {
 
         // download car image
         byte[] carImageDownloaded = webTestClient.get().uri("/api/v1/cars/{regNumber}/car-images", regNumber)
-                .accept(MediaType.APPLICATION_JSON)
+                .accept(MediaType.IMAGE_JPEG)
                 .exchange().expectStatus().isOk()
                 .expectBody(byte[].class)
                 .returnResult().getResponseBody();

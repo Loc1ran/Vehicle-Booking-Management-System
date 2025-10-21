@@ -31,7 +31,7 @@ import {
     FiBell,
     FiChevronDown, FiShoppingCart,
 } from 'react-icons/fi'
-import { useAuth } from '../../components/context/AuthContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 
 
 
@@ -52,7 +52,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
             pos="fixed"
             h="full"
             {...rest}>
-            <Flex h="20" flexDirection="column" DalignItems="center" mx="8" mb={25} mt={5} justifyContent="space-between">
+            <Flex h="20" flexDirection="column" alignItems="center" mx="8" mb={25} mt={5} justifyContent="space-between">
                 <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
                     Dashboard
                 </Text>

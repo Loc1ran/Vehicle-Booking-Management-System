@@ -122,7 +122,7 @@ const CreateCarForm = ({ fetchCars }) => {
                           <option value="true">True</option>
                           <option value="false">False</option>
                       </MySelect>
-                      <Button disable={!isValid || isSubmitting} type="submit">Submit</Button>
+                      <Button isDisabled={!isValid || isSubmitting} type="submit">Submit</Button>
                   </Stack>
               </Form>
           )}

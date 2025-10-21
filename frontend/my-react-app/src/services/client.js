@@ -39,6 +39,25 @@ export const updateCar = async (regNumber, car) => {
     }
 }
 
+export const uploadCarImage = async (regNumber, formData) => {
+    try {
+        return await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/cars/${regNumber}/car-images`,
+            formData,
+            {
+                ...getAuthConfig(),
+                contentType: "multipart/form-data",
+            }
+
+        )
+
+    } catch (err){
+        throw err;
+    }
+}
+
+export const carImageUrl = (regNumber) =>
+    `${import.meta.env.VITE_API_BASE_URL}/api/v1/cars/${regNumber}/car-images`;
+
 export const login = async (usernameAndPassword) => {
     try{
         return await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/login`, usernameAndPassword)
@@ -55,3 +74,4 @@ export const saveUser = async (usernameAndPassword) => {
         throw err;
     }
 }
+
