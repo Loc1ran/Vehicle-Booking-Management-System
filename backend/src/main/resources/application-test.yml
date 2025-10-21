@@ -4,6 +4,6 @@ aws:
 
 spring:
   datasource:
-    url: jdbc:postgresql://awseb-e-4299pdszm3-stack-awsebrdsdatabase-2drl8nqbozeb.cunyecaycv3f.us-east-1.rds.amazonaws.com:5432/booking
+    url: jdbc:postgresql://awseb-e-4299pdszm3-stack-awsebrdsdatabase-2drl8nqbozeb.cunyecaycv3f.us-east-1.rds.amazonaws.com:5432/ebdb
     username: ltt4456
     password: password
