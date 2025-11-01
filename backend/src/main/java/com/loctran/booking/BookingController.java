@@ -43,7 +43,7 @@ public class BookingController {
     @PostMapping
     public void Booking(
             @RequestBody BookingRequest bookingRequest){
-        bookingServices.Book(bookingRequest.user(), bookingRequest.regNumber());
+        bookingServices.Book(bookingRequest.userId(), bookingRequest.regNumber());
     }
 
     @DeleteMapping("{uuid}")

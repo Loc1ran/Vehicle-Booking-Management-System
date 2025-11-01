@@ -61,7 +61,7 @@ public class BookingIntegrationTest {
 
         User user = userService.findByName(name);
 
-        BookingRequest request = new BookingRequest(user, regNumber);
+        BookingRequest request = new BookingRequest(user.getId(), regNumber);
 
         webTestClient.post()
                 .uri("/api/v1/booking")
@@ -130,7 +130,7 @@ public class BookingIntegrationTest {
 
         User user = userService.findByName(name);
 
-        BookingRequest request = new BookingRequest(user, regNumber);
+        BookingRequest request = new BookingRequest(user.getId(), regNumber);
         // send a post request
         webTestClient.post().uri("/api/v1/booking")
                 .accept(MediaType.APPLICATION_JSON)
@@ -192,7 +192,7 @@ public class BookingIntegrationTest {
 
         User user = userService.findByName(name);
 
-        BookingRequest request = new BookingRequest(user, regNumber);
+        BookingRequest request = new BookingRequest(user.getId(), regNumber);
         // send a post request
         webTestClient.post().uri("/api/v1/booking")
                 .accept(MediaType.APPLICATION_JSON)

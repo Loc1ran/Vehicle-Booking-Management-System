@@ -31,15 +31,15 @@ public class BookingServices {
         this.bookingDTOMapper = bookingDTOMapper;
     }
 
-    public void Book(User user, String regNumber){
+    public void Book(UUID userId, String regNumber){
         List<Car> cars = getAvailableCars();
+        User user = userService.getUserEntityByID(userId);
 
         cars.stream()
                 .filter(c -> c.getRegNumber().equals(regNumber))
                 .findFirst()
                 .ifPresentOrElse(car -> {
-                    Car getcar = carServices.getCar(regNumber);
-                    bookingDAO.Booking(new Booking(getcar, user));
+                    bookingDAO.booking(new Booking(car, user));
                 }, () -> {
                     throw new IllegalStateException("Invalid regNumber : " + regNumber);
                 });
@@ -47,7 +47,7 @@ public class BookingServices {
     }
 
     public List<Booking> ViewAllUserBooking(UUID id){
-        return bookingDAO.ViewAllUserBooking(id);
+        return bookingDAO.viewAllUserBooking(id);
     }
 
     public List<Car> getAvailableElectricCars(){
@@ -59,7 +59,7 @@ public class BookingServices {
     }
 
     private List<Car> getCars(List<Car> cars) {
-        List<Car> available = bookingDAO.AvailableCars(cars);
+        List<Car> available = bookingDAO.availableCars(cars);
         if (available.isEmpty()) {
             throw new ResourceNotFound("No cars available");
         }
@@ -68,11 +68,11 @@ public class BookingServices {
     }
 
     public List<BookingDTO> viewAllBooking(){
-        return bookingDAO.ViewBooking().stream().map(bookingDTOMapper).collect(Collectors.toList());
+        return bookingDAO.viewBooking().stream().map(bookingDTOMapper).collect(Collectors.toList());
     }
 
     public List<Booking> viewAllBookingEntity(){
-        return bookingDAO.ViewBooking();
+        return bookingDAO.viewBooking();
     }
 
     public void deleteBooking(UUID id){

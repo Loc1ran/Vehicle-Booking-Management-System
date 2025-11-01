@@ -16,8 +16,7 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getName(),
                 user.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toList()),
-                user.getUsername()
+                        .collect(Collectors.toList())
         );
     }
 }

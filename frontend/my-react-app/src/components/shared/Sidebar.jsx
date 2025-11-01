@@ -29,7 +29,7 @@ import {
     FiSettings,
     FiMenu,
     FiBell,
-    FiChevronDown, FiShoppingCart,
+    FiChevronDown, FiShoppingCart, FiBook, FiSave, FiShoppingBag,
 } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext.jsx'
 
@@ -37,8 +37,10 @@ import { useAuth } from '../context/AuthContext.jsx'
 
 const LinkItems= [
     { name: 'Home', route: '/dashboard', icon: FiHome },
-    { name: 'Cars', route: '/dashboard/cars', icon: FiShoppingCart },
+    { name: 'Available Cars', route: '/dashboard/cars', icon: FiShoppingCart },
+    { name: 'My Booking', route: '/dashboard/booking', icon: FiShoppingBag},
     { name: 'Settings', icon: FiSettings },
+
 ]
 
 const SidebarContent = ({ onClose, ...rest }) => {
@@ -152,11 +154,9 @@ const MobileNav = ({ onOpen, ...rest }) => {
                                     spacing="1px"
                                     ml="2">
                                     <Text fontSize="sm">{user?.username}</Text>
-                                    {user?.roles.map((role, id) => (
-                                        <Text key = {id} fontSize="xs" color="gray.600">
-                                            {role}
+                                        <Text fontSize="xs" color="gray.600">
+                                            {user?.roles}
                                         </Text>
-                                    ))}
                                 </VStack>
                                 <Box display={{ base: 'none', md: 'flex' }}>
                                     <FiChevronDown />

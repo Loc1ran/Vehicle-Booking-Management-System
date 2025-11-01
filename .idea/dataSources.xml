@@ -13,5 +13,19 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="ebdb@awseb-e-4299pdszm3-stack-awsebrdsdatabase-2drl8nqbozeb.cunyecaycv3f.us-east-1.rds.amazonaws.com" uuid="e717a12f-d58f-44ce-92f8-d3203644490d">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>$PROJECT_DIR$/backend/src/main/resources/application-test.yml</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://awseb-e-4299pdszm3-stack-awsebrdsdatabase-2drl8nqbozeb.cunyecaycv3f.us-east-1.rds.amazonaws.com:5432/ebdb</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.host.port" />
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.container.port" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

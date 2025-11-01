@@ -50,7 +50,7 @@ class BookingJPADataAccessServicesTest {
         when(bookingRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<Booking> expected = underTest.ViewBooking();
+        List<Booking> expected = underTest.viewBooking();
 
         // Then
         assertThat(expected).isEqualTo(bookings);
@@ -68,7 +68,7 @@ class BookingJPADataAccessServicesTest {
                 UUID.randomUUID(), car, user
         );
 
-        underTest.Booking(booking);
+        underTest.booking(booking);
 
         verify(bookingRepository).save(booking);
     }
@@ -78,7 +78,7 @@ class BookingJPADataAccessServicesTest {
         List<Car> cars = Arrays.asList(new Car("1111", new BigDecimal("12.34"), Brand.TESLA, true),
                 new Car("2222", new BigDecimal("12.34"), Brand.TESLA, true));
 
-        underTest.AvailableCars(cars);
+        underTest.availableCars(cars);
 
         verify(bookingRepository).findAvailableCarsFromList(cars);
 
@@ -98,7 +98,7 @@ class BookingJPADataAccessServicesTest {
     void viewAllUserBooking() {
         UUID userID = UUID.randomUUID();
 
-        underTest.ViewAllUserBooking(userID);
+        underTest.viewAllUserBooking(userID);
 
         verify(bookingRepository).findBookingsByUserId(userID);
 

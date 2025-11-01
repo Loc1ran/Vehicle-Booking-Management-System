@@ -52,7 +52,7 @@ public class UserIntegrationTest {
         //get user by id from api
         UUID id = getAllUsers.stream().filter(u -> u.name().equals(name)).findFirst().orElseThrow().id();
 
-        UserDTO expectedUser = new UserDTO(id, name, List.of("ROLE_USER"), name);
+        UserDTO expectedUser = new UserDTO(id, name, List.of("ROLE_USER"));
 
         assertThat(getAllUsers).contains(expectedUser);
 
@@ -151,7 +151,7 @@ public class UserIntegrationTest {
                 .exchange().expectStatus().isOk().expectBody(new ParameterizedTypeReference<UserDTO>() {})
                 .returnResult().getResponseBody();
 
-        UserDTO expected = new UserDTO(id, newName, List.of("ROLE_USER"), newName);
+        UserDTO expected = new UserDTO(id, newName, List.of("ROLE_USER"));
 
         assertThat(actual).isEqualTo(expected);
     }

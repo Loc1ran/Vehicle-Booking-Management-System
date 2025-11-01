@@ -68,9 +68,9 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         Booking booking = new Booking(
                 UUID.randomUUID(), car, user
         );
-        underTest.Booking(booking);
+        underTest.booking(booking);
         //When
-        List<Booking> bookings = underTest.ViewBooking();
+        List<Booking> bookings = underTest.viewBooking();
 
         //Then
         assertThat(bookings).isNotEmpty();
@@ -89,9 +89,9 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
                 UUID.randomUUID(), car, user
         );
 
-        underTest.Booking(booking);
+        underTest.booking(booking);
 
-        List<Booking> viewBookings = underTest.ViewBooking();
+        List<Booking> viewBookings = underTest.viewBooking();
 
         assertThat(viewBookings).isNotEmpty();
     }
@@ -110,10 +110,10 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
                  UUID.randomUUID(), car1, user
          );
 
-         underTest.Booking(booking);
+         underTest.booking(booking);
 
          List<Car> cars = carJDBCDataAccessService.getCars();
-         List<Car> actual = underTest.AvailableCars(cars);
+         List<Car> actual = underTest.availableCars(cars);
 
          assertThat(actual).isNotEmpty().containsExactly(car2);
 
@@ -133,7 +133,7 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
                 bookingId, car, user
         );
 
-        underTest.Booking(booking);
+        underTest.booking(booking);
 
         underTest.deleteBooking(bookingId);
 
@@ -154,15 +154,23 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         userJDBCDataAccessService.saveUser(user);
 
         Booking booking1 = new Booking(
-                UUID.randomUUID(), car1, user
+                car1, user
         );
 
-        Booking booking2 = new Booking(UUID.randomUUID(), car2, user);
 
-        underTest.Booking(booking1);
-        underTest.Booking(booking2);
 
-        List<Booking> actual = underTest.ViewAllUserBooking(userId);
+        Booking booking2 = new Booking(car2, user);
+
+        underTest.booking(booking1);
+        underTest.booking(booking2);
+
+        UUID bookingId1 = underTest.viewAllUserBooking(userId).get(0).getId();
+        UUID bookingId2 = underTest.viewAllUserBooking(userId).get(1).getId();
+
+        booking1.setId(bookingId1);
+        booking2.setId(bookingId2);
+
+        List<Booking> actual = underTest.viewAllUserBooking(userId);
 
         assertThat(actual).isNotEmpty().containsExactly(booking1, booking2);
 
@@ -170,7 +178,6 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
     @Test
     void updateBooking() {
-        UUID bookingId = UUID.randomUUID();
         UUID userID = UUID.randomUUID();
 
         Car car = new Car("6666", new BigDecimal("12.34"), Brand.TESLA, true);
@@ -181,10 +188,12 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
 
         Booking booking = new Booking(
-                bookingId, car, user
+                car, user
         );
 
-        underTest.Booking(booking);
+        underTest.booking(booking);
+
+        UUID bookingId = underTest.viewAllUserBooking(userID).get(0).getId();
 
         Brand newBrand = Brand.MERCEDES;
         BigDecimal newRentalPrice = new BigDecimal("38.21");
@@ -199,7 +208,8 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
 
         User userUpdate = new User();
         userUpdate.setId(userID);
-        userUpdate.setName("Loc");
+        userUpdate.setName(newName);
+        userUpdate.setPassword("password");
 
         Booking bookingUpdate = new Booking();
         bookingUpdate.setId(bookingId);
@@ -225,11 +235,12 @@ class BookingJDBCDataAccessServiceTest extends AbstractDaoUnitTest {
         carJDBCDataAccessService.saveCar(car);
         userJDBCDataAccessService.saveUser(user);
 
-        UUID bookingId = UUID.randomUUID();
         Booking booking = new Booking(
-                bookingId, car, user
+                car, user
         );
-        underTest.Booking(booking);
+        underTest.booking(booking);
+
+        UUID bookingId = underTest.viewAllUserBooking(user.getId()).get(0).getId();
 
         Optional<Booking> actual = underTest.findBookingById(bookingId);
         assertThat(actual).isPresent().hasValueSatisfying(b -> {

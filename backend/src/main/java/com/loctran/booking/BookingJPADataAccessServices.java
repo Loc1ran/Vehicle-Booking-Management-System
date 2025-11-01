@@ -17,18 +17,18 @@ public class BookingJPADataAccessServices implements BookingDAO{
         this.bookingRepository = bookingRepository;
     }
     @Override
-    public List<Booking> ViewBooking() {
+    public List<Booking> viewBooking() {
         Page<Booking> page = bookingRepository.findAll(Pageable.ofSize(100));
         return page.getContent();
     }
 
     @Override
-    public void Booking(Booking carBooking){
+    public void booking(Booking carBooking){
        bookingRepository.save(carBooking);
     }
 
     @Override
-    public List<Car> AvailableCars(List<Car> cars) {
+    public List<Car> availableCars(List<Car> cars) {
         return bookingRepository.findAvailableCarsFromList(cars);
     }
 
@@ -38,7 +38,7 @@ public class BookingJPADataAccessServices implements BookingDAO{
     }
 
     @Override
-    public List<Booking> ViewAllUserBooking(UUID id) {
+    public List<Booking> viewAllUserBooking(UUID id) {
        return bookingRepository.findBookingsByUserId(id);
     }
 

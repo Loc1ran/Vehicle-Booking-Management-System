@@ -32,7 +32,7 @@ public class AuthenticationServices {
 
         User user = (User) authentication.getPrincipal();
         UserDTO userDTO = userDTOMapper.apply(user);
-        String jwtToken = jwtUtil.issueToken(userDTO.username(), userDTO.roles());
+        String jwtToken = jwtUtil.issueToken(userDTO.name(), userDTO.roles());
 
         return new AuthenticationResponse(
                 jwtToken, userDTO

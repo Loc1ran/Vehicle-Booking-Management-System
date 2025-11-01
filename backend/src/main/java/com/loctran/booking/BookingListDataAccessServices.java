@@ -16,17 +16,17 @@ public class BookingListDataAccessServices implements BookingDAO {
     }
 
     @Override
-    public void Booking(Booking carBooking){
+    public void booking(Booking carBooking){
         bookings.add(carBooking);
     }
 
     @Override
-    public List<Car> AvailableCars(List<Car> cars) {
+    public List<Car> availableCars(List<Car> cars) {
         if (cars.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Booking> carBookings = ViewBooking();
+        List<Booking> carBookings = viewBooking();
 
         if (carBookings.isEmpty()) {
             return cars;
@@ -42,8 +42,8 @@ public class BookingListDataAccessServices implements BookingDAO {
     }
 
     @Override
-    public List<Booking> ViewAllUserBooking(UUID id) {
-        List<Booking> bookingList = ViewBooking();
+    public List<Booking> viewAllUserBooking(UUID id) {
+        List<Booking> bookingList = viewBooking();
         if ( bookingList.isEmpty()){
             throw new ResourceNotFound("no booking available");
         }
@@ -62,7 +62,7 @@ public class BookingListDataAccessServices implements BookingDAO {
     }
 
     @Override
-    public List<Booking> ViewBooking(){
+    public List<Booking> viewBooking(){
         return bookings;
     }
 

@@ -2,7 +2,9 @@ package com.loctran.booking;
 
 import com.loctran.user.User;
 
+import java.util.UUID;
+
 public record BookingRequest(
-        User user, String regNumber
+        UUID userId, String regNumber
 ) {
 }

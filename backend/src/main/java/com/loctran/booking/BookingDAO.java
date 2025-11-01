@@ -7,11 +7,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BookingDAO {
-    List<Booking> ViewBooking();
-    void Booking(Booking booking);
-    List<Car> AvailableCars(List<Car> cars);
+    List<Booking> viewBooking();
+    void booking(Booking booking);
+    List<Car> availableCars(List<Car> cars);
     void deleteBooking(UUID id);
-    List<Booking> ViewAllUserBooking(UUID id);
+    List<Booking> viewAllUserBooking(UUID id);
     void updateBooking(Booking booking);
     Optional<Booking> findBookingById(UUID id);
 }

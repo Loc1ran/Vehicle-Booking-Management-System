@@ -14,7 +14,7 @@ const AddIcon = () => "+"
 const CloseIcon = () => "X"
 
 const CreateCarDrawerForm = ({fetchCars}) => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
     return<>
             <Button
                 leftIcon={<AddIcon />}

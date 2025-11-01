@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository("bookingJDBC")
-public class BookingJDBCDataAccessService implements BookingDAO{
+public class BookingJDBCDataAccessService implements BookingDAO {
 
     private final JdbcTemplate jdbcTemplate;
     private final BookingRowMapper bookingRowMapper;
@@ -25,53 +25,47 @@ public class BookingJDBCDataAccessService implements BookingDAO{
     }
 
     @Override
-    public List<Booking> ViewBooking() {
+    public List<Booking> viewBooking() {
         var sql = """
-        SELECT\s
-            b.id AS booking_id,
-        
-            c.reg_number,
-            c.rental_price_per_day,
-            c.brand,
-            c.is_electric,
-            c.car_images,
-        
-            u.id AS user_id,
-            u.name,
-            u.password
-        
-        FROM booking b
-        JOIN car c ON b.car_id = c.reg_number
-        JOIN user_info u ON b.user_id = u.id
-        LIMIT 100;
-        """;
+                SELECT\s
+                    b.id AS booking_id,
+                
+                    c.reg_number,
+                    c.rental_price_per_day,
+                    c.brand,
+                    c.is_electric,
+                    c.car_images,
+                
+                    u.id AS user_id,
+                    u.name,
+                    u.password
+                
+                FROM booking b
+                JOIN car c ON b.car_id = c.reg_number
+                JOIN user_info u ON b.user_id = u.id
+                LIMIT 100;
+                """;
 
         return jdbcTemplate.query(sql, bookingRowMapper);
     }
 
     @Override
-    public void Booking(Booking booking) {
-        if ( booking.getId() == null){
-            var sql = """
+    public void booking(Booking booking) {
+        var sql = """
                 INSERT INTO Booking (car_id, user_id)
                 VALUES (?, ?)
                 """;
-            int result = jdbcTemplate.update(sql, booking.getCars().getRegNumber(), booking.getUsers().getId());
-            System.out.println("jdbcTemplate update result :" + result);
-        } else{
-            var sql = """
-                INSERT INTO Booking (id, car_id, user_id)
-                VALUES (?, ?, ?)
-                """;
-            int result = jdbcTemplate.update(sql, booking.getId(), booking.getCars().getRegNumber(), booking.getUsers().getId());
-            System.out.println("jdbcTemplate update result :" + result);
-        }
-
+        int result = jdbcTemplate.update(sql, booking.getCars().getRegNumber(), booking.getUsers().getId());
+        System.out.println("jdbcTemplate update result :" + result);
 
     }
 
     @Override
-    public List<Car> AvailableCars(List<Car> cars) {
+    public List<Car> availableCars(List<Car> cars) {
+        if (cars == null || cars.isEmpty()) {
+            return List.of(); // nothing to check
+        }
+
         List<String> regNumbers = cars.stream()
                 .map(Car::getRegNumber)
                 .toList();
@@ -79,10 +73,10 @@ public class BookingJDBCDataAccessService implements BookingDAO{
         NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
 
         String sql = """
-                    SELECT reg_number, rental_price_per_day, brand, is_electric, car_images
-                    FROM car c
-                    WHERE c.reg_number IN (:cars)
-                    AND NOT EXISTS (
+                SELECT reg_number, rental_price_per_day, brand, is_electric, car_images
+                FROM car c
+                WHERE c.reg_number IN (:cars)
+                AND NOT EXISTS (
                     SELECT 1 FROM booking b
                     WHERE b.car_id = c.reg_number
                 )
@@ -90,7 +84,6 @@ public class BookingJDBCDataAccessService implements BookingDAO{
 
         Map<String, Object> params = Map.of("cars", regNumbers);
         return namedJdbcTemplate.query(sql, params, carRowMapper);
-
     }
 
     @Override
@@ -105,11 +98,11 @@ public class BookingJDBCDataAccessService implements BookingDAO{
     }
 
     @Override
-    public List<Booking> ViewAllUserBooking(UUID id) {
+    public List<Booking> viewAllUserBooking(UUID id) {
         var sql = """
                 SELECT
                 b.id AS booking_id,
-        
+                
                 c.reg_number,
                 c.rental_price_per_day,
                 c.brand,
@@ -131,15 +124,15 @@ public class BookingJDBCDataAccessService implements BookingDAO{
 
     @Override
     public void updateBooking(Booking booking) {
-        if (booking.getCars() != null){
+        if (booking.getCars() != null) {
             var sql = """
-                   UPDATE car SET rental_price_per_day = ?, brand = ?, is_electric = ?
-                   WHERE reg_number = ?
-                   """;
+                    UPDATE car SET rental_price_per_day = ?, brand = ?, is_electric = ?
+                    WHERE reg_number = ?
+                    """;
             jdbcTemplate.update(sql, booking.getCars().getRentalPricePerDay(), booking.getCars().getBrand().name(), booking.getCars().isElectric(), booking.getCars().getRegNumber());
         }
 
-        if (booking.getUsers() != null){
+        if (booking.getUsers() != null) {
             var sql = """
                     UPDATE user_info SET name = ?
                     WHERE id = ?
@@ -151,24 +144,24 @@ public class BookingJDBCDataAccessService implements BookingDAO{
     @Override
     public Optional<Booking> findBookingById(UUID id) {
         var sql = """
-        SELECT\s
-            b.id AS booking_id,
-        
-            c.reg_number,
-            c.rental_price_per_day,
-            c.brand,
-            c.is_electric,
-            c.car_images,
-        
-            u.id AS user_id,
-            u.name,
-            u.password
-        
-        FROM booking b
-        JOIN car c ON b.car_id = c.reg_number
-        JOIN user_info u ON b.user_id = u.id
-        WHERE b.id = ?
-        """;
+                SELECT\s
+                    b.id AS booking_id,
+                
+                    c.reg_number,
+                    c.rental_price_per_day,
+                    c.brand,
+                    c.is_electric,
+                    c.car_images,
+                
+                    u.id AS user_id,
+                    u.name,
+                    u.password
+                
+                FROM booking b
+                JOIN car c ON b.car_id = c.reg_number
+                JOIN user_info u ON b.user_id = u.id
+                WHERE b.id = ?
+                """;
 
         return jdbcTemplate.query(sql, bookingRowMapper, id).stream().findFirst();
     }

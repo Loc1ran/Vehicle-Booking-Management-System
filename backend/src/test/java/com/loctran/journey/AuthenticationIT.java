@@ -71,10 +71,10 @@ public class AuthenticationIT {
         assert response != null;
         UserDTO userDTO = response.userDTO();
 
-        assertThat(jwtUtil.isTokenValid(loginToken, userDTO.username())).isTrue();
+        assertThat(jwtUtil.isTokenValid(loginToken, userDTO.name())).isTrue();
 
         assertThat(userDTO.name()).isEqualTo(name);
-        assertThat(userDTO.username()).isEqualTo(name);
+        assertThat(userDTO.name()).isEqualTo(name);
         assertThat(userDTO.roles()).isEqualTo(List.of("ROLE_USER"));
     }
 }

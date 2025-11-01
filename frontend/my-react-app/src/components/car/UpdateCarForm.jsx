@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import {Formik, Form, useField} from 'formik';
 import * as Yup from 'yup';
 import {Alert, AlertIcon, Box, Button, FormLabel, Input, Select, Stack, VStack, Image} from "@chakra-ui/react";
-import {carImageUrl, updateCar, uploadCarImage} from "../../services/client.js";
+import {carImageUrl, updateCar, uploadCarImage} from "../../services/car.js";
 import {errorNotification, successNotification} from "../../services/notification.js";
 import {useDropzone} from "react-dropzone";
 

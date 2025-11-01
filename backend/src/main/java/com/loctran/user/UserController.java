@@ -5,7 +5,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -33,7 +35,12 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserRegistrationRequest request) {
         userService.saveUser(request);
 
-        String jwtToken = jwtUtil.issueToken(request.name(), "ROLE_USER");
+        User user = userService.findByName(request.name());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("roles", "ROLE_USER");
+
+        String jwtToken = jwtUtil.issueToken(request.name(), claims);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, jwtToken)

@@ -23,8 +23,10 @@ class BookingServicesTest {
 
     @Mock
     private BookingDAO bookingDAO;
+
     @Mock
     private CarServices carServices;
+
     @Mock
     private UserService userService;
 
@@ -46,20 +48,19 @@ class BookingServicesTest {
         List<Car> availableCars = List.of(car);
 
         when(carServices.getAllCars()).thenReturn(availableCars);
-        when(bookingDAO.AvailableCars(availableCars)).thenReturn(availableCars);
-        when(carServices.getCar("7777")).thenReturn(car);
+        when(bookingDAO.availableCars(availableCars)).thenReturn(availableCars);
+        when(userService.getUserEntityByID(user.getId())).thenReturn(user);
 
         ArgumentCaptor<Booking> bookingCaptor = ArgumentCaptor.forClass(Booking.class);
 
-        underTest.Book(user, "7777");
+        underTest.Book(user.getId(), "7777");
 
-        verify(bookingDAO).Booking(bookingCaptor.capture());
+        verify(bookingDAO).booking(bookingCaptor.capture());
 
         Booking captured = bookingCaptor.getValue();
 
         assertThat(captured.getUsers()).isEqualTo(user);
         assertThat(captured.getCars()).isEqualTo(car);
-
 
     }
 
@@ -71,12 +72,12 @@ class BookingServicesTest {
         List<Car> availableCars = List.of(car);
 
         when(carServices.getAllCars()).thenReturn(availableCars);
-        when(bookingDAO.AvailableCars(availableCars)).thenReturn(availableCars);
+        when(bookingDAO.availableCars(availableCars)).thenReturn(availableCars);
 
-        assertThatThrownBy(() -> underTest.Book(user, regNumber)).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> underTest.Book(user.getId(), regNumber)).isInstanceOf(IllegalStateException.class)
                 .hasMessage("Invalid regNumber : " + regNumber);
 
-       verify(bookingDAO, never()).Booking(any());
+       verify(bookingDAO, never()).booking(any());
 
 
     }
@@ -86,7 +87,7 @@ class BookingServicesTest {
         UUID userId = UUID.randomUUID();
         underTest.ViewAllUserBooking(userId);
 
-        verify(bookingDAO).ViewAllUserBooking(userId);
+        verify(bookingDAO).viewAllUserBooking(userId);
     }
 
     @Test
@@ -98,13 +99,13 @@ class BookingServicesTest {
         List<Car> availableElectricCars = List.of(car1);
 
         when(carServices.getAllCars()).thenReturn(getAllCars);
-        when(bookingDAO.AvailableCars(getAllCars)).thenReturn(availableElectricCars);
+        when(bookingDAO.availableCars(getAllCars)).thenReturn(availableElectricCars);
 
         List<Car> actual = underTest.getAvailableCars();
 
         assertThat(actual).isEqualTo(availableElectricCars);
         verify(carServices).getAllCars();
-        verify(bookingDAO).AvailableCars(getAllCars);
+        verify(bookingDAO).availableCars(getAllCars);
     }
 
     @Test
@@ -116,13 +117,13 @@ class BookingServicesTest {
         List<Car> availableCars = List.of(car2);
 
         when(carServices.getAllCars()).thenReturn(getAllCars);
-        when(bookingDAO.AvailableCars(getAllCars)).thenReturn(availableCars);
+        when(bookingDAO.availableCars(getAllCars)).thenReturn(availableCars);
 
         List<Car> actual = underTest.getAvailableCars();
 
         assertThat(actual).isEqualTo(availableCars);
         verify(carServices).getAllCars();
-        verify(bookingDAO).AvailableCars(getAllCars);
+        verify(bookingDAO).availableCars(getAllCars);
     }
 
     @Test
@@ -133,19 +134,19 @@ class BookingServicesTest {
         List<Car> getAllCars = List.of(car1, car2);
 
         when(carServices.getAllCars()).thenReturn(getAllCars);
-        when(bookingDAO.AvailableCars(getAllCars)).thenReturn(List.of());
+        when(bookingDAO.availableCars(getAllCars)).thenReturn(List.of());
 
         assertThatThrownBy(() -> underTest.getAvailableCars())
                 .isInstanceOf(ResourceNotFound.class).hasMessage("No cars available");
         verify(carServices).getAllCars();
-        verify(bookingDAO).AvailableCars(getAllCars);
+        verify(bookingDAO).availableCars(getAllCars);
     }
 
     @Test
     void viewAllBooking() {
         underTest.viewAllBooking();
 
-        verify(bookingDAO).ViewBooking();
+        verify(bookingDAO).viewBooking();
     }
 
     @Test
@@ -184,7 +185,7 @@ class BookingServicesTest {
         Car car = new Car("1111", new BigDecimal("12.34"), Brand.TESLA, true);
         User user = new User(UUID.randomUUID(), "Loc", "password");
 
-        Booking booking = new Booking(bookingId, car, user);
+        Booking booking = new Booking(car, user);
 
         when(bookingDAO.findBookingById(bookingId)).thenReturn(Optional.of(booking));
 

@@ -1,26 +1,26 @@
 import { Center, Wrap, WrapItem, Button, Spinner, Text } from '@chakra-ui/react'
 import SidebarWithHeader from '../src/components/shared/Sidebar.jsx';
 import {useEffect, useState} from 'react';
-import {getCar} from "./services/client.js";
+import {getCar} from "./services/car.js";
 import ProductAddToCart from '../src/components/car/product.jsx';
 import CreateCarDrawerForm from '../src/components/car/CreateCarDrawerForm.jsx';
 import {errorNotification} from "./services/notification.js";
+import {getAvailableCar} from "./services/booking.js";
+import {useAuth} from "./components/context/AuthContext.jsx";
 
 const App = () => {
     const [getCars, setGetCars] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [err, setError] = useState("");
+
+    const { user } = useAuth();
 
     const fetchCars = () => {
         setLoading(true);
-        getCar().then(res => {
+        setGetCars([]);
+        getAvailableCar().then(res => {
             setGetCars(res.data);
         }).catch(err => {
-            setError(err.response.data.message)
-            errorNotification(
-                err.code,
-                err.response.data.message,
-            )
+            console.log(err);
         }).finally(() =>
         {
             setLoading(false);
@@ -37,17 +37,6 @@ const App = () => {
         )
     }
 
-    if(err){
-        return (
-            <SidebarWithHeader>
-                <CreateCarDrawerForm fetchCars={ fetchCars }/>
-                <Text mt={4}>
-                    There an error
-                </Text>
-            </SidebarWithHeader>
-        )
-    }
-
     if(getCars.length <= 0){
         return (
             <SidebarWithHeader>
@@ -58,6 +47,13 @@ const App = () => {
             </SidebarWithHeader>
         )
     }
+
+    if(!user){
+        return (
+            <SidebarWithHeader><Spinner color="teal.500" size="lg" /></SidebarWithHeader>
+        )
+    }
+
     return (
         <SidebarWithHeader>
             <CreateCarDrawerForm fetchCars={fetchCars}/>
