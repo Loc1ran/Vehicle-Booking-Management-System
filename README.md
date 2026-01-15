@@ -1,6 +1,8 @@
 # Vehicle Booking Management System
 
-A  production for learning purpose, full-stack vehicle booking platform that enables users to securely reserve vehicles, manage bookings, and handle availability in real time. The system is designed with clean architecture, strong security practices, automated database migrations, and CI/CD for reliable deployment.
+A learning-focused full-stack vehicle booking platform developed from a CLI-based prototype to a complete capstone project. The application enables users to securely reserve vehicles, manage bookings, and track availability in real time. While fully functional, the primary focus of this project is DevOps, emphasizing the end-to-end process of building, testing, and delivering applications to users.
+
+The system is designed using clean architecture principles, strong security best practices, automated database migrations, and a CI/CD pipeline to ensure reliable and repeatable deployments.
 
 ---
 
