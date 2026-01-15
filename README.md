@@ -74,7 +74,7 @@ The frontend is built using Vite with React. After navigating to the frontend di
 
 ### Installation
 ```bash
-git clone https://github.com/your-username/vehicle-booking-management-system.git
+git clone https://github.com/Loc1ran/Vehicle-Booking-Management-System.git
 cd vehicle-booking-management-system
 docker compose up
 
