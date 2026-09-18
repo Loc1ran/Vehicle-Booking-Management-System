@@ -7,9 +7,10 @@ The system is designed using clean architecture principles, strong security best
 ---
 
 ## Key Highlights
-- Secure authentication using **JWT** with **role-based access control**
+- Secure authentication using **JWT** with Spring Security and bcrypt password hashing
 - RESTful API design following **industry best practices**
-- **Flyway**-managed database migrations for schema consistency
+- **Flyway**-managed database migrations with **foreign key constraints** enforcing referential integrity
+- Vehicle image delivery via **Amazon S3 presigned URLs** for time-limited, authenticated access
 - Containerized with **Docker** for environment parity
 - Automated **CI/CD pipeline** using GitHub Actions
 - Deployed to **AWS** with scalable cloud infrastructure
@@ -19,10 +20,10 @@ The system is designed using clean architecture principles, strong security best
 
 ## Features
 - User registration and login
-- Role-based permissions (Admin / User)
 - Vehicle availability tracking
 - Booking creation, update, and cancellation
 - Conflict prevention for overlapping bookings
+- Vehicle image upload to Amazon S3 and retrieval via presigned GET URLs
 - Centralized error handling and validation
 
 ---

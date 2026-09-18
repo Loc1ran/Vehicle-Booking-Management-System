@@ -6,6 +6,7 @@ import com.loctran.s3.S3Buckets;
 import com.loctran.s3.S3Services;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,9 @@ public class CarServices {
     private final CarDAO carDAO;
     private final S3Services s3Services;
     private final S3Buckets s3Buckets;
+
+    @Value("${aws.s3.mock}")
+    private boolean s3Mock;
 
     public CarServices(@Qualifier("carJDBC") CarDAO carDAO, S3Services s3Services, S3Buckets s3Buckets) {
         this.carDAO = carDAO;
@@ -117,6 +121,22 @@ public class CarServices {
         }
 
         return s3Services.getObject(s3Buckets.getCar(), "car-images/%s/%s".formatted(regNumber, carImageId));
+    }
+
+    public String getCarImagePresignedUrl(String regNumber) {
+        Car car = carDAO.getCarById(regNumber)
+                .orElseThrow(()-> new ResourceNotFound("car not found"));
+
+        String carImageId = car.getCarImageId();
+        if(StringUtils.isBlank(carImageId)){
+            throw new ResourceNotFound("car image not found");
+        }
+
+        if (s3Mock) {
+            return "/api/v1/cars/%s/car-images".formatted(regNumber);
+        }
+
+        return s3Services.getObjectPresignedUrl(s3Buckets.getCar(), "car-images/%s/%s".formatted(regNumber, carImageId));
     }
 }
 
