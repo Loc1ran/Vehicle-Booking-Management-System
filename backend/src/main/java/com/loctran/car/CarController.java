@@ -58,4 +58,10 @@ public class CarController {
             @PathVariable("regNumber") String regNumber){
         return carServices.getCarImages(regNumber);
     }
+
+    @GetMapping("{regNumber}/car-image-url")
+    public String getCarImageUrl(
+            @PathVariable("regNumber") String regNumber){
+        return carServices.getCarImagePresignedUrl(regNumber);
+    }
 }

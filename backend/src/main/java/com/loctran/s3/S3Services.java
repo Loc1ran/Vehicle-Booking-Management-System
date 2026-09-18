@@ -8,15 +8,20 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
 import java.io.IOException;
+import java.time.Duration;
 
 @Service
 public class S3Services {
     private final S3Client s3Client;
+    private final S3Presigner s3Presigner;
 
-    public S3Services(S3Client s3Client) {
+    public S3Services(S3Client s3Client, S3Presigner s3Presigner) {
         this.s3Client = s3Client;
+        this.s3Presigner = s3Presigner;
     }
 
     public void putObject(String bucketName, String key, byte[] file){
@@ -41,5 +46,17 @@ public class S3Services {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getObjectPresignedUrl(String bucketName, String key) {
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(15))
+                .getObjectRequest(GetObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build())
+                .build();
+
+        return s3Presigner.presignGetObject(presignRequest).url().toString();
     }
 }
